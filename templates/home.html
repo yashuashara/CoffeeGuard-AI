@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+
+{% block title %}CoffeeGuard AI — Smart Coffee Leaf Disease Detection{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="hero-section">
+    <div class="hero-container">
+        <div class="hero-left">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                75.37% Model Accuracy
+            </div>
+            <h1>Protect Your <span class="highlight">Coffee Crops</span> With AI</h1>
+            <p class="hero-description">
+                Instantly detect diseases in coffee leaves using our advanced machine learning model. 
+                Powered by SVM and XGBoost ensemble learning for laboratory-grade accuracy.
+            </p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">1,264+</div>
+                    <div class="hero-stat-label">Images Trained</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">4</div>
+                    <div class="hero-stat-label">Disease Classes</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">75.37%</div>
+                    <div class="hero-stat-label">Accuracy</div>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="/predict" class="btn btn-primary" id="hero-cta-predict">
+                    🔬 Start Detection
+                </a>
+                <a href="/about" class="btn btn-secondary" id="hero-cta-about">
+                    Learn More
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-preview-card">
+                <div class="preview-header">
+                    <span class="preview-title">🧪 Live Detection Preview</span>
+                    <span class="preview-badge">AI Powered</span>
+                </div>
+                <div class="preview-image-grid">
+                    <div class="preview-img-item">
+                        <img src="{{ url_for('static', filename='images/healthy_sample.jpg') }}" alt="Healthy coffee leaf">
+                        <span class="preview-img-label">✅ Healthy</span>
+                    </div>
+                    <div class="preview-img-item">
+                        <img src="{{ url_for('static', filename='images/rust_sample.jpg') }}" alt="Rust infected coffee leaf">
+                        <span class="preview-img-label">🟠 Rust</span>
+                    </div>
+                    <div class="preview-img-item">
+                        <img src="{{ url_for('static', filename='images/phoma_sample.jpg') }}" alt="Phoma infected coffee leaf">
+                        <span class="preview-img-label">🔴 Phoma</span>
+                    </div>
+                    <div class="preview-img-item">
+                        <img src="{{ url_for('static', filename='images/miner_sample.jpg') }}" alt="Miner damaged coffee leaf">
+                        <span class="preview-img-label">🟡 Miner</span>
+                    </div>
+                </div>
+                <div class="preview-result">
+                    <div class="preview-result-icon">🍃</div>
+                    <div class="preview-result-text">
+                        <strong>SVM + XGBoost Ensemble</strong>
+                        <span>Upload any coffee leaf photo to get instant diagnosis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Disease Showcase -->
+<section class="section" id="diseases-section">
+    <div class="container">
+        <div class="section-header fade-in">
+            <span class="section-tag">🔍 Disease Library</span>
+            <h2 class="section-title">Diseases We Detect</h2>
+            <p class="section-subtitle">Our model can classify coffee leaves into four categories with exceptional accuracy. Learn about each condition below.</p>
+        </div>
+        <div class="disease-grid">
+            <div class="disease-card healthy fade-in">
+                <div class="disease-card-img">
+                    <img src="{{ url_for('static', filename='images/healthy_sample.jpg') }}" alt="Healthy coffee leaf">
+                    <span class="disease-card-status">Healthy</span>
+                </div>
+                <div class="disease-card-body">
+                    <h3 class="disease-card-name">Healthy Leaf</h3>
+                    <p class="disease-card-desc">Normal, healthy coffee leaf with vibrant green coloration. Shows optimal photosynthetic activity and no disease markers.</p>
+                </div>
+            </div>
+            <div class="disease-card rust fade-in">
+                <div class="disease-card-img">
+                    <img src="{{ url_for('static', filename='images/rust_sample.jpg') }}" alt="Coffee leaf rust">
+                    <span class="disease-card-status">Rust</span>
+                </div>
+                <div class="disease-card-body">
+                    <h3 class="disease-card-name">Coffee Leaf Rust</h3>
+                    <p class="disease-card-desc">Caused by Hemileia vastatrix. Creates orange-yellow powdery lesions on the underside of leaves. Most devastating coffee disease globally.</p>
+                </div>
+            </div>
+            <div class="disease-card phoma fade-in">
+                <div class="disease-card-img">
+                    <img src="{{ url_for('static', filename='images/phoma_sample.jpg') }}" alt="Phoma leaf spot">
+                    <span class="disease-card-status">Phoma</span>
+                </div>
+                <div class="disease-card-body">
+                    <h3 class="disease-card-name">Phoma Leaf Spot</h3>
+                    <p class="disease-card-desc">Caused by Phoma costarricensis fungus. Produces dark brown to black necrotic lesions, often with concentric ring patterns on leaves.</p>
+                </div>
+            </div>
+            <div class="disease-card miner fade-in">
+                <div class="disease-card-img">
+                    <img src="{{ url_for('static', filename='images/miner_sample.jpg') }}" alt="Coffee leaf miner">
+                    <span class="disease-card-status">Miner</span>
+                </div>
+                <div class="disease-card-body">
+                    <h3 class="disease-card-name">Leaf Miner</h3>
+                    <p class="disease-card-desc">Caused by Leucoptera coffeella larvae. Creates serpentine mining patterns between leaf surfaces, drastically reducing photosynthetic area.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how-it-works-section" style="background: var(--bg-secondary);">
+    <div class="container">
+        <div class="section-header fade-in">
+            <span class="section-tag">⚡ How It Works</span>
+            <h2 class="section-title">Three Simple Steps</h2>
+            <p class="section-subtitle">Get accurate disease diagnosis for your coffee leaves in seconds.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card fade-in">
+                <div class="step-number">1</div>
+                <h3>Upload Image</h3>
+                <p>Take a clear photo of the coffee leaf and upload it to our platform. We support JPG, PNG, and WEBP formats.</p>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-number">2</div>
+                <h3>AI Analysis</h3>
+                <p>Our SVM + XGBoost ensemble model extracts image features and analyzes patterns to identify the disease category.</p>
+            </div>
+            <div class="step-card fade-in">
+                <div class="step-number">3</div>
+                <h3>Get Results</h3>
+                <p>Receive instant prediction with confidence scores, disease description, and actionable treatment recommendations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Model Testing Section -->
+<section class="section model-test-section" id="model-test-section">
+    <div class="container">
+        <div class="model-container">
+            <div class="model-info fade-in">
+                <span class="section-tag">🧠 AI Model</span>
+                <h2>Test Our <span class="highlight">Machine Learning</span> Model</h2>
+                <p>Our ensemble model combines the power of Support Vector Machine (SVM) and XGBoost classifiers using soft voting to deliver highly accurate predictions on coffee leaf health.</p>
+                <div class="model-specs">
+                    <div class="spec-item">
+                        <div class="spec-item-label">Algorithm</div>
+                        <div class="spec-item-value">SVM + XGBoost</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-item-label">Accuracy</div>
+                        <div class="spec-item-value">75.37%</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-item-label">Voting</div>
+                        <div class="spec-item-value">Soft Voting</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-item-label">Features</div>
+                        <div class="spec-item-value">28,672</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-item-label">XGB Estimators</div>
+                        <div class="spec-item-value">200 Trees</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-item-label">Image Size</div>
+                        <div class="spec-item-value">64 × 64</div>
+                    </div>
+                </div>
+            </div>
+            <div class="fade-in">
+                <div class="upload-card" id="home-upload-card">
+                    <div class="upload-zone" id="home-upload-zone">
+                        <span class="upload-zone-icon">📸</span>
+                        <h3>Drop a Leaf Image Here</h3>
+                        <p>or click to browse • JPG, PNG, WEBP</p>
+                        <input type="file" id="home-file-input" accept="image/*">
+                    </div>
+                    <div class="upload-preview" id="home-preview">
+                        <div class="preview-container">
+                            <div class="preview-thumb">
+                                <img id="home-preview-img" src="" alt="Preview">
+                            </div>
+                            <div class="preview-info">
+                                <div class="preview-filename" id="home-filename"></div>
+                                <div class="preview-filesize" id="home-filesize"></div>
+                                <button class="btn-predict" id="home-predict-btn" onclick="predictHome()">
+                                    🔬 Analyze Leaf
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="spinner" id="home-spinner">
+                        <div class="spinner-circle"></div>
+                        <p>Analyzing leaf with AI model...</p>
+                    </div>
+                    <div class="result-card" id="home-result">
+                        <div class="result-header">
+                            <div class="result-icon" id="home-result-icon">🍃</div>
+                            <div>
+                                <div class="result-label">Prediction Result</div>
+                                <div class="result-name" id="home-result-name"></div>
+                            </div>
+                        </div>
+                        <div class="result-confidence">
+                            <span style="font-size:0.85rem;color:var(--text-secondary);">Confidence: <strong id="home-confidence-val"></strong></span>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="home-confidence-bar"></div>
+                            </div>
+                        </div>
+                        <div class="result-description">
+                            <strong>📋 Diagnosis</strong>
+                            <span id="home-result-desc"></span>
+                        </div>
+                        <div class="result-recommendation">
+                            <strong>💊 Recommendation</strong>
+                            <span id="home-result-rec"></span>
+                        </div>
+                        <div class="prob-bars" id="home-prob-bars"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Home page prediction
+    const homeFileInput = document.getElementById('home-file-input');
+    const homeUploadZone = document.getElementById('home-upload-zone');
+    const homePreview = document.getElementById('home-preview');
+    let homeSelectedFile = null;
+
+    homeFileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        homeSelectedFile = file;
+        showHomePreview(file);
+    });
+
+    // Drag and drop
+    homeUploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        homeUploadZone.classList.add('drag-over');
+    });
+    homeUploadZone.addEventListener('dragleave', () => {
+        homeUploadZone.classList.remove('drag-over');
+    });
+    homeUploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        homeUploadZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            homeSelectedFile = file;
+            showHomePreview(file);
+        }
+    });
+
+    function showHomePreview(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('home-preview-img').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        document.getElementById('home-filename').textContent = file.name;
+        document.getElementById('home-filesize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        homePreview.classList.add('active');
+        document.getElementById('home-result').classList.remove('active');
+    }
+
+    function predictHome() {
+        if (!homeSelectedFile) return;
+
+        const btn = document.getElementById('home-predict-btn');
+        const spinner = document.getElementById('home-spinner');
+        const result = document.getElementById('home-result');
+
+        btn.disabled = true;
+        btn.textContent = 'Analyzing...';
+        spinner.classList.add('active');
+        result.classList.remove('active');
+
+        const formData = new FormData();
+        formData.append('file', homeSelectedFile);
+
+        fetch('/api/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(async res => {
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                return res.json().then(data => ({ status: res.status, ok: res.ok, data }));
+            } else {
+                const text = await res.text();
+                throw new Error(`Server returned non-JSON response (Status ${res.status}): ${text.substring(0, 100)}...`);
+            }
+        })
+        .then(({ status, ok, data }) => {
+            spinner.classList.remove('active');
+            btn.disabled = false;
+            btn.textContent = '🔬 Analyze Leaf';
+
+            if (!ok || data.error) {
+                alert('Error: ' + (data.error || 'Unknown error occurred'));
+                return;
+            }
+
+            // Update results
+            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠' };
+            document.getElementById('home-result-icon').textContent = icons[data.prediction] || '🍃';
+            document.getElementById('home-result-icon').style.background = data.color + '22';
+            document.getElementById('home-result-name').textContent = data.prediction;
+            document.getElementById('home-result-name').style.color = data.color;
+            document.getElementById('home-confidence-val').textContent = data.confidence + '%';
+            document.getElementById('home-confidence-bar').style.width = data.confidence + '%';
+            document.getElementById('home-confidence-bar').style.background = data.color;
+            document.getElementById('home-result-desc').textContent = data.description;
+            document.getElementById('home-result-rec').textContent = data.recommendation;
+
+            // Probability bars
+            const probBars = document.getElementById('home-prob-bars');
+            probBars.innerHTML = '';
+            for (const [label, prob] of Object.entries(data.probabilities)) {
+                probBars.innerHTML += `
+                    <div class="prob-item">
+                        <span class="prob-label">${label}</span>
+                        <div class="prob-bar">
+                            <div class="prob-fill ${label.toLowerCase()}" style="width: ${prob}%"></div>
+                        </div>
+                        <span class="prob-value">${prob}%</span>
+                    </div>
+                `;
+            }
+
+            result.classList.add('active');
+        })
+        .catch(err => {
+            spinner.classList.remove('active');
+            btn.disabled = false;
+            btn.textContent = '🔬 Analyze Leaf';
+            alert('Error: ' + err.message);
+        });
+    }
+
+    // Double observer code removed since it is now present globally in base.html
+</script>
+{% endblock %}

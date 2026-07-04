@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CoffeeGuard AI - Advanced Coffee Leaf Disease Detection using Machine Learning (SVM + XGBoost). Identify Rust, Phoma, Miner diseases instantly.">
+    <title>{% block title %}CoffeeGuard AI{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="bg-particles" id="bg-particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" id="nav-logo">
+                <span class="logo-icon">🍃</span>
+                <span class="logo-text">CoffeeGuard<span class="logo-accent">AI</span></span>
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="nav-home">Home</a></li>
+                <li><a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}" id="nav-about">About Us</a></li>
+                <li><a href="/predict" class="nav-link {% if request.path == '/predict' %}active{% endif %}" id="nav-predict">Predict</a></li>
+            </ul>
+            <a href="/predict" class="nav-cta" id="nav-cta-btn">Try Now →</a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="footer-wave">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path d="M0,60 C360,100 720,0 1080,60 C1260,90 1380,40 1440,60 L1440,100 L0,100 Z" fill="rgba(16, 24, 22, 0.95)"/>
+            </svg>
+        </div>
+        <div class="footer-content">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="/" class="footer-logo">
+                            <span class="logo-icon">🍃</span>
+                            <span class="logo-text">CoffeeGuard<span class="logo-accent">AI</span></span>
+                        </a>
+                        <p class="footer-desc">Protecting coffee crops worldwide with advanced AI-powered disease detection. Early detection, better harvests.</p>
+                    </div>
+                    <div class="footer-links-col">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/about">About Us</a></li>
+                            <li><a href="/predict">Disease Detection</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-links-col">
+                        <h4>Technology</h4>
+                        <ul>
+                            <li><a href="/about">SVM Classifier</a></li>
+                            <li><a href="/about">XGBoost Model</a></li>
+                            <li><a href="/about">Ensemble Learning</a></li>
+                            <li><a href="/about">Image Processing</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 CoffeeGuard AI. Built with SVM + XGBoost Ensemble Learning.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile nav toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const navLinks = document.getElementById('nav-links');
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+
+        // Background particles
+        function createParticles() {
+            const container = document.getElementById('bg-particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Scroll animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
