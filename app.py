@@ -144,6 +144,7 @@ def api_predict():
         return jsonify({'error': f'Internal Server Error: {str(e)}'}), 500
 
 
-if __name__ == '__main__':
-    # Changed port to 5005 to avoid conflict with other services (like Node/Express) on 5000
-    app.run(debug=True, host='0.0.0.0', port=5005)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5005))
+    app.run(host="0.0.0.0", port=port, debug=False)
+    
