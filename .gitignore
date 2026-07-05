@@ -1,1 +1,4 @@
-model.pkl 
+model_opt.pkl.gz
+scaler_opt.pkl.gz
+__pycache__/
+*.pyc

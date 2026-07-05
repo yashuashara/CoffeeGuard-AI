@@ -1,9 +1,19 @@
 import os
+
+# ── Limit threads BEFORE importing numpy/sklearn/xgboost ──
+# Prevents spawning dozens of threads (each ~8MB stack) on shared containers
+# Critical for staying within Render free tier's 512MB RAM limit
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
+import gc
 import cv2
 import numpy as np
 import pickle
 from flask import Flask, render_template, request, jsonify
-import base64
 from sklearn.svm import SVC
 from sklearn.ensemble import VotingClassifier
 from xgboost import XGBClassifier
@@ -13,6 +23,7 @@ app = Flask(__name__)
 # Load model and scaler
 model = pickle.load(open("model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
+gc.collect()  # Free temporary pickle deserialization memory
 
 categories = ['Healthy', 'Miner', 'Phoma', 'Rust']
 
