@@ -88,61 +88,42 @@ def predict_page():
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     try:
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file uploaded'}), 400
-
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
-
         # Read image
-        file_bytes = np.frombuffer(file.read(), np.uint8)
-        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    file_bytes = np.frombuffer(file.read(), np.uint8)
+    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    print("1. Image received")
 
-        if img is None:
-            return jsonify({'error': 'Invalid image file'}), 400
+    if img is None:
+        return jsonify({'error': 'Invalid image file'}), 400
 
-        # Extract features
-        features = get_features(img)
-        if features is None:
-            return jsonify({'error': 'Feature extraction failed'}), 500
-        features = features.reshape(1, -1)
-        
-        # Scaling
-        try:
-            features = scaler.transform(features)
-        except Exception as e:
-            print(f"Scaling error: {e}")
-            return jsonify({'error': f'Scaling failed: {str(e)}'}), 500
+    # Extract features
+    features = get_features(img)
+    print("2. Features extracted")
 
-        # Predict
-        try:
-            prediction = model.predict(features)[0]
-            probabilities = model.predict_proba(features)[0]
-        except Exception as e:
-            print(f"Prediction error: {e}")
-            return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+    if features is None:
+        return jsonify({'error': 'Feature extraction failed'}), 500
 
-        label = categories[prediction]
-        confidence = float(probabilities[prediction]) * 100
-        info = disease_info[label]
+    features = features.reshape(1, -1)
 
-        # Get all probabilities
-        all_probs = {categories[i]: round(float(probabilities[i]) * 100, 2) for i in range(len(categories))}
-
-        return jsonify({
-            'prediction': label,
-            'confidence': round(confidence, 2),
-            'status': info['status'],
-            'description': info['description'],
-            'recommendation': info['recommendation'],
-            'color': info['color'],
-            'probabilities': all_probs
-        })
+    # Scaling
+    try:
+        features = scaler.transform(features)
+        print("3. Scaling done")
     except Exception as e:
-        print(f"Global API error: {e}")
-        return jsonify({'error': f'Internal Server Error: {str(e)}'}), 500
+        print(f"Scaling error: {e}")
+        return jsonify({'error': f'Scaling failed: {str(e)}'}), 500
 
+    # Predict
+    try:
+        print("4. Starting prediction...")
+        prediction = model.predict(features)[0]
+        print("5. Prediction done")
+
+        probabilities = model.predict_proba(features)[0]
+        print("6. Probability done")
+    except Exception as e:
+        print(f"Prediction error: {e}")
+        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5005))
