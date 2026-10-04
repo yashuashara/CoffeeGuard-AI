@@ -180,11 +180,15 @@
             btn.textContent = '🔬 Re-Analyze Leaf';
 
             if (!ok || data.error) {
-                alert(data.message || data.error || 'Unknown error occurred');
+                showMainNotice('⚠️', 'Image Not Recognized', '#f59e0b',
+                    data.message || 'Something went wrong while analyzing this image.',
+                    'Please upload a clear, close-up photo of a single coffee leaf.');
                 return;
             }
 
             const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Uncertain: '❓' };
+            document.getElementById('main-confidence-val').closest('.result-confidence').style.display = '';
+            document.getElementById('main-prob-bars').style.display = '';
             document.getElementById('main-result-icon').textContent = icons[data.prediction] || '🍃';
             document.getElementById('main-result-icon').style.background = data.color + '22';
             document.getElementById('main-result-name').textContent = data.prediction;
@@ -215,8 +219,25 @@
             spinner.classList.remove('active');
             btn.disabled = false;
             btn.textContent = '🔬 Launch Analysis';
-            alert('Error: ' + err.message);
+            showMainNotice('❌', 'Something Went Wrong', '#ef4444', err.message, 'Please try again in a moment.');
         });
+    }
+
+    // Shows a non-prediction notice (not-a-leaf, network error, etc.) inline
+    // in the same result card, instead of a browser alert() popup.
+    function showMainNotice(icon, title, color, description, recommendation) {
+        const result = document.getElementById('main-result');
+        document.getElementById('main-result-icon').textContent = icon;
+        document.getElementById('main-result-icon').style.background = color + '22';
+        document.getElementById('main-result-name').textContent = title;
+        document.getElementById('main-result-name').style.color = color;
+        document.getElementById('main-result-desc').textContent = description;
+        document.getElementById('main-result-rec').textContent = recommendation;
+        // Confidence bar and probability breakdown don't apply here
+        document.getElementById('main-confidence-val').closest('.result-confidence').style.display = 'none';
+        document.getElementById('main-prob-bars').style.display = 'none';
+        document.getElementById('main-prob-bars').innerHTML = '';
+        result.classList.add('active');
     }
 
     // Double observer code removed since it is now present globally in base.html

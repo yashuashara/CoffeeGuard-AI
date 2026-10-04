@@ -327,12 +327,15 @@
             btn.textContent = '🔬 Analyze Leaf';
 
             if (!ok || data.error) {
-                alert('Error: ' + (data.error || 'Unknown error occurred'));
+                showHomeNotice('⚠️', 'Image Not Recognized', '#f59e0b',
+                    data.message || 'Something went wrong while analyzing this image.',
+                    'Please upload a clear, close-up photo of a single coffee leaf.');
                 return;
             }
 
             // Update results
-            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠' };
+            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Uncertain: '❓' };
+            document.getElementById('home-confidence-val').parentElement.parentElement.style.display = '';
             document.getElementById('home-result-icon').textContent = icons[data.prediction] || '🍃';
             document.getElementById('home-result-icon').style.background = data.color + '22';
             document.getElementById('home-result-name').textContent = data.prediction;
@@ -345,6 +348,7 @@
 
             // Probability bars
             const probBars = document.getElementById('home-prob-bars');
+            probBars.style.display = '';
             probBars.innerHTML = '';
             for (const [label, prob] of Object.entries(data.probabilities)) {
                 probBars.innerHTML += `
@@ -364,8 +368,25 @@
             spinner.classList.remove('active');
             btn.disabled = false;
             btn.textContent = '🔬 Analyze Leaf';
-            alert('Error: ' + err.message);
+            showHomeNotice('❌', 'Something Went Wrong', '#ef4444', err.message, 'Please try again in a moment.');
         });
+    }
+
+    // Shows a non-prediction notice (not-a-leaf, network error, etc.) inline
+    // in the same result card, instead of a browser alert() popup.
+    function showHomeNotice(icon, title, color, description, recommendation) {
+        const result = document.getElementById('home-result');
+        document.getElementById('home-result-icon').textContent = icon;
+        document.getElementById('home-result-icon').style.background = color + '22';
+        document.getElementById('home-result-name').textContent = title;
+        document.getElementById('home-result-name').style.color = color;
+        document.getElementById('home-result-desc').textContent = description;
+        document.getElementById('home-result-rec').textContent = recommendation;
+        // Confidence bar and probability breakdown don't apply here
+        document.getElementById('home-confidence-val').parentElement.parentElement.style.display = 'none';
+        document.getElementById('home-prob-bars').style.display = 'none';
+        document.getElementById('home-prob-bars').innerHTML = '';
+        result.classList.add('active');
     }
 
     // Double observer code removed since it is now present globally in base.html
