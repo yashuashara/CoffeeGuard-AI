@@ -54,25 +54,33 @@ disease_info = {
     }
 }
 
-def leaf_pixel_ratio(img):
+def leaf_region_stats(img):
     """
-    Returns the fraction of the image covered by the SINGLE LARGEST
-    contiguous blob of leaf-like color (greens for healthy tissue,
-    browns/oranges/yellows for common lesions like rust, phoma, and
-    miner damage) — not just "do any matching pixels exist anywhere".
+    Finds the single largest contiguous blob of leaf-like color (greens
+    for healthy tissue, browns/oranges/yellows for common lesions like
+    rust, phoma, and miner damage) and returns:
+        (area_ratio, texture_variance)
 
     This is a cheap heuristic gate, not a classifier — its only job is to
-    catch images that are clearly NOT a leaf (a hand, a wall, a bag, a
-    patterned shirt, random objects) before they reach the disease model,
-    which otherwise has no "not a leaf" option and will confidently force
-    any image into one of the 4 disease categories.
+    catch images that are clearly NOT a leaf before they reach the disease
+    model, which otherwise has no "not a leaf" option and will confidently
+    force any image into one of the 4 disease categories.
 
-    Using the largest CONNECTED component (instead of a simple overall
-    pixel-count ratio) is what makes this reliable: a real close-up leaf
-    photo has one dominant leaf-shaped region filling much of the frame,
-    while an incidental yellow wall, orange bag, or patterned clothing in
-    the background produces scattered or smaller disconnected patches
-    that an overall-ratio check would still wrongly add up and pass.
+    Two checks, for two different failure modes we actually hit testing
+    this:
+      1. area_ratio (largest CONNECTED blob, not a simple overall pixel
+         count) — catches scattered incidental color in the background
+         (a small orange bag, patterned clothing) that a naive sum would
+         wrongly add up and pass.
+      2. texture_variance — color alone cannot tell a leaf apart from a
+         flat surface painted/printed in a similar color (a yellow or
+         mustard wall is a real failure case we hit: it is one huge,
+         solid, uniformly-colored region, which actually makes it score
+         *higher* on a pure connected-blob-size check, not lower). A real
+         leaf has natural texture — veins, lesion edges, uneven lighting,
+         surface irregularity — a flat painted wall does not. This is
+         measured as the variance of the Laplacian (standard blur/texture
+         metric) within the matched region only.
     """
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -87,13 +95,20 @@ def leaf_pixel_ratio(img):
 
     combined = cv2.bitwise_or(green_mask, brown_mask)
 
-    num_labels, _, stats, _ = cv2.connectedComponentsWithStats(combined, connectivity=8)
+    num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(combined, connectivity=8)
     if num_labels <= 1:
-        return 0.0  # no matching pixels at all
+        return 0.0, 0.0  # no matching pixels at all
 
     # stats[0] is always the background label; look only at real components
-    largest_area = int(stats[1:, cv2.CC_STAT_AREA].max())
-    return float(largest_area) / combined.size
+    largest_label = int(np.argmax(stats[1:, cv2.CC_STAT_AREA])) + 1
+    largest_area = int(stats[largest_label, cv2.CC_STAT_AREA])
+    area_ratio = float(largest_area) / combined.size
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+    texture_variance = float(laplacian[labels == largest_label].var())
+
+    return area_ratio, texture_variance
 
 
 def get_features(img):
@@ -157,12 +172,18 @@ def api_predict():
 
         # Gate 1: reject images that don't look leaf-like at all
         # (prevents confidently diagnosing hands, walls, random objects, etc.)
-        ratio = leaf_pixel_ratio(img)
+        area_ratio, texture_variance = leaf_region_stats(img)
         LEAF_RATIO_THRESHOLD = 0.20
-        if ratio < LEAF_RATIO_THRESHOLD:
+        TEXTURE_VARIANCE_THRESHOLD = 150.0
+        if area_ratio < LEAF_RATIO_THRESHOLD:
             return jsonify({
                 'error': 'not_a_leaf',
                 'message': "This doesn't look like a coffee leaf image. Please upload a clear, close-up photo of a single leaf for accurate results."
+            }), 422
+        if texture_variance < TEXTURE_VARIANCE_THRESHOLD:
+            return jsonify({
+                'error': 'not_a_leaf',
+                'message': "This looks like a flat, uniform surface rather than a real leaf (e.g. a wall or fabric can share a leaf's color). Please upload a clear, close-up photo of an actual coffee leaf."
             }), 422
 
         # Extract features
