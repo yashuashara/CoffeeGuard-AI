@@ -56,15 +56,23 @@ disease_info = {
 
 def leaf_pixel_ratio(img):
     """
-    Returns the fraction of pixels in the image that fall into leaf-like
-    color ranges (greens for healthy tissue, browns/oranges/yellows for
-    common lesions like rust, phoma, and miner damage).
+    Returns the fraction of the image covered by the SINGLE LARGEST
+    contiguous blob of leaf-like color (greens for healthy tissue,
+    browns/oranges/yellows for common lesions like rust, phoma, and
+    miner damage) — not just "do any matching pixels exist anywhere".
 
     This is a cheap heuristic gate, not a classifier — its only job is to
-    catch images that are clearly NOT a leaf (a hand, a wall, a screen,
-    random objects) before they reach the disease model, which otherwise
-    has no "not a leaf" option and will confidently force any image into
-    one of the 4 disease categories.
+    catch images that are clearly NOT a leaf (a hand, a wall, a bag, a
+    patterned shirt, random objects) before they reach the disease model,
+    which otherwise has no "not a leaf" option and will confidently force
+    any image into one of the 4 disease categories.
+
+    Using the largest CONNECTED component (instead of a simple overall
+    pixel-count ratio) is what makes this reliable: a real close-up leaf
+    photo has one dominant leaf-shaped region filling much of the frame,
+    while an incidental yellow wall, orange bag, or patterned clothing in
+    the background produces scattered or smaller disconnected patches
+    that an overall-ratio check would still wrongly add up and pass.
     """
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -78,7 +86,14 @@ def leaf_pixel_ratio(img):
     brown_mask = cv2.inRange(hsv, (5, 140, 20), (30, 255, 200))
 
     combined = cv2.bitwise_or(green_mask, brown_mask)
-    return float(np.sum(combined > 0)) / combined.size
+
+    num_labels, _, stats, _ = cv2.connectedComponentsWithStats(combined, connectivity=8)
+    if num_labels <= 1:
+        return 0.0  # no matching pixels at all
+
+    # stats[0] is always the background label; look only at real components
+    largest_area = int(stats[1:, cv2.CC_STAT_AREA].max())
+    return float(largest_area) / combined.size
 
 
 def get_features(img):
@@ -143,7 +158,7 @@ def api_predict():
         # Gate 1: reject images that don't look leaf-like at all
         # (prevents confidently diagnosing hands, walls, random objects, etc.)
         ratio = leaf_pixel_ratio(img)
-        LEAF_RATIO_THRESHOLD = 0.15
+        LEAF_RATIO_THRESHOLD = 0.20
         if ratio < LEAF_RATIO_THRESHOLD:
             return jsonify({
                 'error': 'not_a_leaf',
