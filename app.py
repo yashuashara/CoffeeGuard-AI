@@ -54,6 +54,33 @@ disease_info = {
     }
 }
 
+def leaf_pixel_ratio(img):
+    """
+    Returns the fraction of pixels in the image that fall into leaf-like
+    color ranges (greens for healthy tissue, browns/oranges/yellows for
+    common lesions like rust, phoma, and miner damage).
+
+    This is a cheap heuristic gate, not a classifier — its only job is to
+    catch images that are clearly NOT a leaf (a hand, a wall, a screen,
+    random objects) before they reach the disease model, which otherwise
+    has no "not a leaf" option and will confidently force any image into
+    one of the 4 disease categories.
+    """
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+    # Healthy/green leaf tissue
+    green_mask = cv2.inRange(hsv, (25, 40, 40), (95, 255, 255))
+    # Brown/orange/yellow lesions (rust, phoma, miner trails, dried spots).
+    # Saturation floor is set high (140) because skin tones share the same
+    # hue range as these lesions but sit at much lower saturation
+    # (tested: real skin ~S60-130 vs real lesion colors ~S170-233) —
+    # this is what actually separates "hand" from "diseased leaf", not hue.
+    brown_mask = cv2.inRange(hsv, (5, 140, 20), (30, 255, 200))
+
+    combined = cv2.bitwise_or(green_mask, brown_mask)
+    return float(np.sum(combined > 0)) / combined.size
+
+
 def get_features(img):
     try:
         # Resize to 64x64 (Model expects exactly 28,672 features: 64*64*7)
@@ -113,6 +140,16 @@ def api_predict():
         if img is None:
             return jsonify({'error': 'Invalid image file'}), 400
 
+        # Gate 1: reject images that don't look leaf-like at all
+        # (prevents confidently diagnosing hands, walls, random objects, etc.)
+        ratio = leaf_pixel_ratio(img)
+        LEAF_RATIO_THRESHOLD = 0.15
+        if ratio < LEAF_RATIO_THRESHOLD:
+            return jsonify({
+                'error': 'not_a_leaf',
+                'message': "This doesn't look like a coffee leaf image. Please upload a clear, close-up photo of a single leaf for accurate results."
+            }), 422
+
         # Extract features
         features = get_features(img)
         if features is None:
@@ -140,6 +177,22 @@ def api_predict():
 
         # Get all probabilities
         all_probs = {categories[i]: round(float(probabilities[i]) * 100, 2) for i in range(len(categories))}
+
+        # Gate 2: even for leaf-like images, don't present a confident
+        # diagnosis when the model itself isn't confident — this is the
+        # case that most often misleads people (e.g. an unclear or
+        # borderline photo getting a seemingly authoritative answer).
+        CONFIDENCE_THRESHOLD = 45.0
+        if confidence < CONFIDENCE_THRESHOLD:
+            return jsonify({
+                'prediction': 'Uncertain',
+                'confidence': round(confidence, 2),
+                'status': 'uncertain',
+                'description': "The model isn't confident enough to give a reliable diagnosis from this image.",
+                'recommendation': 'Try a clearer, well-lit, close-up photo of a single leaf against a plain background.',
+                'color': '#9ca3af',
+                'probabilities': all_probs
+            })
 
         return jsonify({
             'prediction': label,

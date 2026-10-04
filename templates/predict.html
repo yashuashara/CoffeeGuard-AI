@@ -180,11 +180,11 @@
             btn.textContent = '🔬 Re-Analyze Leaf';
 
             if (!ok || data.error) {
-                alert('Error: ' + (data.error || 'Unknown error occurred'));
+                alert(data.message || data.error || 'Unknown error occurred');
                 return;
             }
 
-            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠' };
+            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Uncertain: '❓' };
             document.getElementById('main-result-icon').textContent = icons[data.prediction] || '🍃';
             document.getElementById('main-result-icon').style.background = data.color + '22';
             document.getElementById('main-result-name').textContent = data.prediction;
