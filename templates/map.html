@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Outbreak Map — CoffeeGuard AI{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+    .map-wrap { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+    #outbreak-map { height: 560px; border-radius: var(--radius-lg); border: 1px solid var(--card-border); overflow: hidden; background: #101816; }
+    .map-panel { display: grid; gap: 16px; }
+    .map-panel .sidebar-card h3 { margin-bottom: 10px; }
+    .range-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .range-pills button { border: 1px solid var(--card-border); background: rgba(255,255,255,.04); color: var(--text-secondary);
+        border-radius: 50px; padding: 6px 12px; font: 600 .82rem var(--font-body); cursor: pointer; }
+    .range-pills button.active { background: var(--green-500); border-color: var(--green-500); color: #052e16; }
+    .legend-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: .92rem; color: var(--text-primary); }
+    .legend-row i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+    .legend-row b { color: var(--text-secondary); font-weight: 700; }
+    .map-empty { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+    .leaflet-popup-content { font-family: var(--font-body); }
+    @media (max-width: 900px) { .map-wrap { grid-template-columns: 1fr; } #outbreak-map { height: 420px; } }
+</style>
+
+<section class="predict-hero fade-in">
+    <div class="container">
+        <h1>Disease <span class="highlight">Outbreak Map</span></h1>
+        <p>Every dot is a leaf scan a farmer chose to share — disease, severity and an approximate (~1 km) location, never a photo. It gives the Coffee Board, KVKs and FPOs an early view of where disease is spreading.</p>
+    </div>
+</section>
+
+<section class="predict-main">
+    <div class="container">
+        <div class="map-wrap">
+            <div id="outbreak-map" role="region" aria-label="Map of shared disease scans"></div>
+            <div class="map-panel">
+                <div class="sidebar-card">
+                    <h3>📅 Time range</h3>
+                    <div class="range-pills" id="range-pills">
+                        <button type="button" data-days="7">7 days</button>
+                        <button type="button" data-days="30" class="active">30 days</button>
+                        <button type="button" data-days="90">90 days</button>
+                    </div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>🦠 Shared scans</h3>
+                    <div id="legend"></div>
+                    <p class="map-empty" id="map-empty" hidden>No scans shared in this period yet. Diagnose a leaf on the <a href="/predict" style="color:var(--green-400)">Predict</a> page and tap “Add to outbreak map”.</p>
+                </div>
+                <div class="sidebar-card" style="background: rgba(34,197,94,.05); border-color: rgba(34,197,94,.2);">
+                    <h3 style="color: var(--green-400);">🛡️ Privacy</h3>
+                    <p style="font-size:.88rem; color:var(--text-secondary); line-height:1.7;">Sharing is opt-in. Locations are rounded to about 1 km before they are saved, and no photos or names are stored.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+(function () {
+    const NAMES = ['Rust', 'Phoma', 'Miner', 'Cercospora', 'Healthy'];
+    const COLORS = { Rust: '#f97316', Phoma: '#ef4444', Miner: '#f59e0b', Cercospora: '#a855f7', Healthy: '#22c55e' };
+    // If the map library can't load (no signal), still show the counts
+    const hasMap = typeof L !== 'undefined';
+    let map = null, layer = null;
+    if (hasMap) {
+        map = L.map('outbreak-map', { scrollWheelZoom: false }).setView([12.3, 75.9], 7); // Karnataka–Kerala coffee belt
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18, attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        layer = L.layerGroup().addTo(map);
+    } else {
+        document.getElementById('outbreak-map').innerHTML =
+            '<p style="padding:24px;color:var(--text-secondary)">📴 The map needs an internet connection to load. Scan counts are shown on the right.</p>';
+    }
+
+    async function load(days) {
+        const res = await fetch('/api/outbreaks?days=' + days);
+        const data = await res.json();
+        const bounds = [];
+        if (hasMap) layer.clearLayers();
+        if (hasMap) data.points.forEach(p => {
+            const r = 7 + Math.min(18, Math.sqrt(p.count) * 4);
+            const m = L.circleMarker([p.lat, p.lon], { radius: r, color: p.color, weight: 2, fillColor: p.color, fillOpacity: 0.45 });
+            const when = new Date(p.last_seen * 1000).toLocaleDateString();
+            m.bindPopup(`<b style="color:${p.color}">${p.disease}</b><br>${p.count} scan(s) · avg ${p.avg_severity}% of leaf<br><small>last seen ${when}</small>`);
+            layer.addLayer(m);
+            bounds.push([p.lat, p.lon]);
+        });
+        if (hasMap && bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 11 });
+        const legend = document.getElementById('legend');
+        const totals = data.totals || {};
+        const any = Object.values(totals).some(v => v > 0);
+        document.getElementById('map-empty').hidden = any;
+        legend.innerHTML = any ? NAMES.filter(n => totals[n]).map(n =>
+            `<div class="legend-row"><span><i style="background:${COLORS[n]}"></i>${n}</span><b>${totals[n]}</b></div>`).join('') : '';
+    }
+
+    document.querySelectorAll('#range-pills button').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('#range-pills button').forEach(x => x.classList.toggle('active', x === b));
+        load(b.dataset.days);
+    }));
+    load(30);
+})();
+</script>
+{% endblock %}
