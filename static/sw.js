@@ -1,9 +1,10 @@
 /* CoffeeGuard AI service worker: lets the app open with no signal.
-   Pages: network first, cached copy when offline. Static files: cache first.
+   Pages: network first, cached copy when offline. Static files: cache first
+   (safe because every CSS/JS URL is versioned per deploy).
    API calls are never cached (photos taken offline are queued by predict.js). */
-const VERSION = "cg-v2-1";
-const PRECACHE = ["/predict", "/", "/static/css/style.css", "/static/js/predict.js",
-                  "/static/icons/icon-192.png", "/manifest.webmanifest"];
+const VERSION = "cg-v2-2";  // bump to force every browser to drop old caches
+// Pages only: CSS/JS URLs carry ?v=<deploy time> and are cached the first time they load
+const PRECACHE = ["/predict", "/", "/static/icons/icon-192.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
