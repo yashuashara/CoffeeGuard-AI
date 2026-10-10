@@ -2027,3 +2027,72 @@ img {
 
 .disease-card.cercospora::before { background: #a855f7; }
 .disease-card.cercospora .disease-card-status { background: rgba(168,85,247,.15); color: #c084fc; border: 1px solid rgba(168,85,247,.35); }
+
+/* ============================================
+   Responsive fixes (v2.1)
+   ============================================ */
+
+/* Predict: give the diagnosis column more room than the tips column */
+.predict-layout { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+.tip-list li > span:last-child { flex: 1; min-width: 0; }
+
+/* Verdict box: wraps by the card's OWN width (not the screen), so long
+   Hindi / Kannada / Malayalam words never push the Listen button outside */
+.result-card { container-type: inline-size; }
+.verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; }
+.verdict-icon { flex: 0 0 auto; }
+.verdict-body { flex: 1 1 220px; min-width: 0; }
+.verdict-title { overflow-wrap: anywhere; }
+.voice-btn { flex: 0 0 auto; margin-left: auto; }
+@container (max-width: 520px) {
+    .voice-btn { flex: 1 1 100%; margin-left: 0; }
+    .result-actions { grid-template-columns: 1fr; }
+    .result-header { gap: 12px; }
+}
+.result-name, .farmer-card-name, .plant-summary .result-name { overflow-wrap: anywhere; }
+.farmer-card-top { align-items: flex-start; }
+.scan-heading { gap: 10px; flex-wrap: wrap; }
+
+/* Diseases We Detect: 5 in a row on desktop, 3 + 2 centred on tablet,
+   swipeable row on phones — never a lonely card on its own row */
+.disease-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+.disease-grid .disease-card { flex: 1 1 0; min-width: 0; max-width: calc((100% - 80px) / 5); }
+.disease-grid .disease-card-img { height: 170px; }
+.disease-grid .disease-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.disease-grid .disease-card-body { padding: 18px; }
+.disease-grid .disease-card-name { font-size: 1.05rem; }
+.disease-grid .disease-card-desc { font-size: 0.85rem; }
+@media (max-width: 1100px) {
+    .disease-grid .disease-card { flex: 0 1 calc((100% - 40px) / 3); max-width: calc((100% - 40px) / 3); }
+}
+@media (max-width: 768px) {
+    .disease-grid { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory;
+        margin: 0 -16px; padding: 4px 16px 14px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+    .disease-grid .disease-card { flex: 0 0 44%; max-width: 44%; scroll-snap-align: start; }
+    .disease-grid .disease-card-img { height: 160px; }
+}
+@media (max-width: 520px) {
+    .disease-grid .disease-card { flex: 0 0 80%; max-width: 80%; }
+}
+
+/* Phones: less stacked padding so the result card uses the screen */
+@media (max-width: 1024px) {
+    .predict-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+@media (max-width: 600px) {
+    .container { padding: 0 16px; }
+    .predict-main { padding: 28px 0 70px; }
+    .upload-card { padding: 16px; border-radius: var(--radius-lg); }
+    .result-card { padding: 16px; margin-top: 16px; }
+    .upload-zone { padding: 36px 16px !important; }
+    .scan-section, .farmer-card { margin-bottom: 20px; }
+    .farmer-card { padding: 16px; }
+    .verdict { padding: 14px; }
+    .verdict-title { font-size: 1.15rem; }
+    .result-name { font-size: 1.6rem !important; }
+    .prob-item { grid-template-columns: 82px 1fr 52px; gap: 8px; }
+    .preview-thumb { width: 140px !important; height: 140px !important; }
+    .sidebar-card { padding: 20px; }
+    .plant-summary { padding: 16px; }
+    .mode-btn { font-size: 0.85rem; padding: 10px 6px; }
+}
