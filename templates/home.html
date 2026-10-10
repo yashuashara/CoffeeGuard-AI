@@ -9,25 +9,25 @@
         <div class="hero-left">
             <div class="hero-badge">
                 <span class="badge-dot"></span>
-                75.37% Model Accuracy
+                92% on unseen leaves · 78% on field-like photos
             </div>
             <h1>Protect Your <span class="highlight">Coffee Crops</span> With AI</h1>
             <p class="hero-description">
-                Instantly detect diseases in coffee leaves using our advanced machine learning model. 
-                Powered by SVM and XGBoost ensemble learning for laboratory-grade accuracy.
+                Photograph a coffee leaf and see the disease, where it is, how severe it is, and what to do next —
+                in English, Hindi, Kannada or Malayalam. Powered by MobileNetV2 transfer learning.
             </p>
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <div class="hero-stat-value">1,264+</div>
-                    <div class="hero-stat-label">Images Trained</div>
+                    <div class="hero-stat-value">2,949</div>
+                    <div class="hero-stat-label">Photos Trained</div>
                 </div>
                 <div class="hero-stat">
-                    <div class="hero-stat-value">4</div>
-                    <div class="hero-stat-label">Disease Classes</div>
+                    <div class="hero-stat-value">5</div>
+                    <div class="hero-stat-label">Leaf Conditions</div>
                 </div>
                 <div class="hero-stat">
-                    <div class="hero-stat-value">75.37%</div>
-                    <div class="hero-stat-label">Accuracy</div>
+                    <div class="hero-stat-value">92%</div>
+                    <div class="hero-stat-label">Unseen-leaf Accuracy</div>
                 </div>
             </div>
             <div class="hero-buttons">
@@ -66,7 +66,7 @@
                 <div class="preview-result">
                     <div class="preview-result-icon">🍃</div>
                     <div class="preview-result-text">
-                        <strong>SVM + XGBoost Ensemble</strong>
+                        <strong>AI Lesion Scan + Severity</strong>
                         <span>Upload any coffee leaf photo to get instant diagnosis</span>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
         <div class="section-header fade-in">
             <span class="section-tag">🔍 Disease Library</span>
             <h2 class="section-title">Diseases We Detect</h2>
-            <p class="section-subtitle">Our model can classify coffee leaves into four categories with exceptional accuracy. Learn about each condition below.</p>
+            <p class="section-subtitle">Our model recognises five leaf conditions and measures how much of the leaf each one has damaged. Learn about each condition below.</p>
         </div>
         <div class="disease-grid">
             <div class="disease-card healthy fade-in">
@@ -124,6 +124,16 @@
                     <p class="disease-card-desc">Caused by Leucoptera coffeella larvae. Creates serpentine mining patterns between leaf surfaces, drastically reducing photosynthetic area.</p>
                 </div>
             </div>
+            <div class="disease-card cercospora fade-in">
+                <div class="disease-card-img">
+                    <img src="{{ url_for('static', filename='images/cercospora_sample.jpg') }}" alt="Cercospora leaf spot">
+                    <span class="disease-card-status">Cercospora</span>
+                </div>
+                <div class="disease-card-body">
+                    <h3 class="disease-card-name">Cercospora (Brown Eye Spot)</h3>
+                    <p class="disease-card-desc">Caused by Cercospora coffeicola. Round brown spots with a pale centre and yellow halo, most common on nutrient-stressed plants in strong sun.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -145,7 +155,7 @@
             <div class="step-card fade-in">
                 <div class="step-number">2</div>
                 <h3>AI Analysis</h3>
-                <p>Our SVM + XGBoost ensemble model extracts image features and analyzes patterns to identify the disease category.</p>
+                <p>CoffeeGuard checks photo quality, finds the leaf, and a MobileNetV2 model looks at the whole leaf plus zoomed sections to identify the disease.</p>
             </div>
             <div class="step-card fade-in">
                 <div class="step-number">3</div>
@@ -163,31 +173,31 @@
             <div class="model-info fade-in">
                 <span class="section-tag">🧠 AI Model</span>
                 <h2>Test Our <span class="highlight">Machine Learning</span> Model</h2>
-                <p>Our ensemble model combines the power of Support Vector Machine (SVM) and XGBoost classifiers using soft voting to deliver highly accurate predictions on coffee leaf health.</p>
+                <p>A pretrained MobileNetV2 network (transfer learning) studies the cropped leaf and three zoomed tiles, combined with lesion-colour measurements. We test it on leaves it has never seen and on field-like photos, and publish both numbers.</p>
                 <div class="model-specs">
                     <div class="spec-item">
                         <div class="spec-item-label">Algorithm</div>
-                        <div class="spec-item-value">SVM + XGBoost</div>
+                        <div class="spec-item-value">MobileNetV2 (TL)</div>
                     </div>
                     <div class="spec-item">
-                        <div class="spec-item-label">Accuracy</div>
-                        <div class="spec-item-value">75.37%</div>
+                        <div class="spec-item-label">Unseen leaves</div>
+                        <div class="spec-item-value">92.3%</div>
                     </div>
                     <div class="spec-item">
-                        <div class="spec-item-label">Voting</div>
-                        <div class="spec-item-value">Soft Voting</div>
+                        <div class="spec-item-label">Field-like photos</div>
+                        <div class="spec-item-value">78.5%</div>
                     </div>
                     <div class="spec-item">
                         <div class="spec-item-label">Features</div>
-                        <div class="spec-item-value">28,672</div>
+                        <div class="spec-item-value">3,904</div>
                     </div>
                     <div class="spec-item">
-                        <div class="spec-item-label">XGB Estimators</div>
-                        <div class="spec-item-value">200 Trees</div>
+                        <div class="spec-item-label">Model size</div>
+                        <div class="spec-item-value">9 MB</div>
                     </div>
                     <div class="spec-item">
-                        <div class="spec-item-label">Image Size</div>
-                        <div class="spec-item-value">64 × 64</div>
+                        <div class="spec-item-label">Classes</div>
+                        <div class="spec-item-value">5</div>
                     </div>
                 </div>
             </div>
@@ -334,7 +344,7 @@
             }
 
             // Update results
-            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Uncertain: '❓' };
+            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Cercospora: '🟣', Uncertain: '❓' };
             document.getElementById('home-confidence-val').parentElement.parentElement.style.display = '';
             document.getElementById('home-result-icon').textContent = icons[data.prediction] || '🍃';
             document.getElementById('home-result-icon').style.background = data.color + '22';

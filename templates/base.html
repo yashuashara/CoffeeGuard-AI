@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0a0f0d">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -26,6 +29,7 @@
                 <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="nav-home">Home</a></li>
                 <li><a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}" id="nav-about">About Us</a></li>
                 <li><a href="/predict" class="nav-link {% if request.path == '/predict' %}active{% endif %}" id="nav-predict">Predict</a></li>
+                <li><a href="/map" class="nav-link {% if request.path == '/map' %}active{% endif %}" id="nav-map">Outbreak Map</a></li>
             </ul>
             <a href="/predict" class="nav-cta" id="nav-cta-btn">Try Now →</a>
             <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
@@ -70,10 +74,10 @@
                     <div class="footer-links-col">
                         <h4>Technology</h4>
                         <ul>
-                            <li><a href="/about">SVM Classifier</a></li>
-                            <li><a href="/about">XGBoost Model</a></li>
-                            <li><a href="/about">Ensemble Learning</a></li>
-                            <li><a href="/about">Image Processing</a></li>
+                            <li><a href="/about">MobileNetV2 Transfer Learning</a></li>
+                            <li><a href="/about">AI Lesion Scan</a></li>
+                            <li><a href="/about">Photo Quality Check</a></li>
+                            <li><a href="/map">Outbreak Map</a></li>
                         </ul>
                     </div>
                 </div>
@@ -133,5 +137,11 @@
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     </script>
     {% block scripts %}{% endblock %}
+    <script>
+        // Offline support: cache the app so it opens with no signal
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {}));
+        }
+    </script>
 </body>
 </html>

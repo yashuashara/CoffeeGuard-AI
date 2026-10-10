@@ -19,7 +19,7 @@
                 <span class="section-tag">💡 Our Mission</span>
                 <h2>Empowering Farmers with <span class="highlight">Precision Agriculture</span></h2>
                 <p>Coffee leaf diseases, particularly the devastating Coffee Leaf Rust, account for billions in agricultural losses annually. Smallholder farmers are often the most affected.</p>
-                <p>Our mission is to democratize laboratory-grade disease diagnostics. By combining Support Vector Machines and Extreme Gradient Boosting algorithms, we've created an accessible tool that requires nothing more than a smartphone camera to diagnose crop health with 92.37% accuracy.</p>
+                <p>Our mission is to democratize laboratory-grade disease diagnostics. Using MobileNetV2 transfer learning, an AI lesion scan and simple advice in four languages, we've built a tool that needs nothing more than a phone camera. On leaves it has never seen it is 92% accurate, and 78% on field-like photos (rotated, re-lit, blurred, cluttered backgrounds).</p>
             </div>
             <div class="mission-visual fade-in">
                 <div class="mission-img-container">
@@ -35,16 +35,16 @@
     <div class="container">
         <div class="stats-banner">
             <div class="stat-card fade-in">
-                <div class="stat-value">75.37%</div>
-                <div class="stat-label">Model Accuracy</div>
+                <div class="stat-value">92%</div>
+                <div class="stat-label">Unseen-leaf Accuracy</div>
             </div>
             <div class="stat-card fade-in">
-                <div class="stat-value">4</div>
+                <div class="stat-value">5</div>
                 <div class="stat-label">Identifiable Conditions</div>
             </div>
             <div class="stat-card fade-in">
-                <div class="stat-value">E.L.</div>
-                <div class="stat-label">Ensemble Learning</div>
+                <div class="stat-value">4</div>
+                <div class="stat-label">Languages</div>
             </div>
             <div class="stat-card fade-in">
                 <div class="stat-value">&lt;2s</div>
@@ -65,25 +65,25 @@
         <div class="tech-grid">
             <div class="tech-card fade-in">
                 <div class="tech-icon">📐</div>
-                <h3>SVM Classifier</h3>
-                <p>Our Support Vector Machine implements a balanced linear classifier that creates optimal decision boundaries for the 28,672 extracted features across multiple color spaces.</p>
+                <h3>MobileNetV2 Transfer Learning</h3>
+                <p>A network pretrained on 1.2 million ImageNet photos already understands edges, textures and spots. We use its 1,280-number embedding of the cropped leaf and three zoomed tiles, so small lesions aren't lost.</p>
             </div>
             <div class="tech-card fade-in">
                 <div class="tech-icon">🌳</div>
-                <h3>XGBoost Model</h3>
-                <p>The Extreme Gradient Boosting component utilizes 200 sequentially planted decision trees with a max depth of 6 to capture complex non-linear patterns in leaf textures.</p>
+                <h3>AI Lesion Scan</h3>
+                <p>OpenCV colour segmentation finds every lesion inside the leaf, measures the percentage of leaf area affected and draws a heatmap, so farmers see where the damage is and how bad it is.</p>
             </div>
             <div class="tech-card fade-in">
                 <div class="tech-icon">🤝</div>
-                <h3>Soft Voting Ensemble</h3>
-                <p>We combine both models using a soft voting classifier. By averaging the projected class probabilities of both SVM and XGBoost, we achieve superior generalization.</p>
+                <h3>Trust Gates</h3>
+                <p>Every photo is checked for blur, darkness, glare and size first; non-leaf images are rejected; and when the model is under 45% confident it says “Not sure” instead of guessing.</p>
             </div>
             <div class="tech-card tech-card--full fade-in">
                 <div class="tech-card-inner">
                     <div class="tech-icon tech-icon--accent">🖼️</div>
                     <div>
-                        <h3>Feature Engineering Pipeline</h3>
-                        <p>Before prediction, every user-uploaded image is securely processed. It is standardized to a 64x64 resolution and transformed into a 7-channel feature stack (Grayscale, BGR, and HSV). This creates a highly descriptive 28,672 feature vector that captures both texture and specific color markers of foliar diseases. The input array is then normalized using our pre-fitted <code>StandardScaler</code>.</p>
+                        <h3>Honest Testing</h3>
+                        <p>Our training photos include flipped copies of the same leaf, so we split the data <b>by leaf</b> — no copy of a test leaf is ever seen in training. We also test on “field-like” versions of each photo. The original 64×64-pixel SVM + XGBoost model fell to 28% on those; the new model holds 78%. Photos are processed in memory and never stored.</p>
                     </div>
                 </div>
             </div>

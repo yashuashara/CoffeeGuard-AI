@@ -6,23 +6,39 @@
 <section class="predict-hero fade-in">
     <div class="container">
         <h1>AI Leaf <span class="highlight">Diagnostic</span></h1>
-        <p>Upload a clear photo of a coffee leaf to get an instant diagnosis. Our combined SVM + XGBoost model will analyze the image against our database.</p>
+        <p>Photograph a coffee leaf — or 3 to 5 leaves from one plant — and get the disease, a lesion heatmap, how severe it is, and exactly what to do next in your language.</p>
     </div>
 </section>
 
 <section class="predict-main">
     <div class="container">
+        <!-- Offline / pending banner -->
+        <div class="offline-banner" id="offline-banner" hidden>
+            <span id="offline-text">📴 You're offline. Take photos anyway — they'll be diagnosed automatically when signal returns.</span>
+        </div>
+        <div class="pending-banner" id="pending-banner" hidden>
+            <span id="pending-text"></span>
+            <button class="mini-btn" id="pending-run" type="button">Diagnose now</button>
+        </div>
+
         <div class="predict-layout">
             <!-- Left Side: Prediction Tool -->
             <div class="upload-card fade-in" id="main-upload-card" style="margin-top: 0;">
-                <div class="upload-zone" id="main-upload-zone" style="padding: 60px 30px;">
+
+                <div class="mode-toggle" role="tablist" aria-label="Diagnosis mode">
+                    <button class="mode-btn active" id="mode-single" role="tab" aria-selected="true" type="button">🍃 Single leaf</button>
+                    <button class="mode-btn" id="mode-plant" role="tab" aria-selected="false" type="button">🌳 Whole plant <small>3–5 leaves</small></button>
+                </div>
+
+                <div class="upload-zone" id="main-upload-zone" style="padding: 50px 30px;">
                     <span class="upload-zone-icon">📸</span>
-                    <h3 style="font-size: 1.25rem;">Select Leaf Image</h3>
-                    <p style="margin-bottom: 16px;">Drag and drop or click to browse</p>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); padding: 4px 12px; background: rgba(255,255,255,0.05); border-radius: 50px;">JPG, PNG, WEBP max 10MB</span>
+                    <h3 style="font-size: 1.25rem;" id="upload-title">Select Leaf Image</h3>
+                    <p style="margin-bottom: 16px;" id="upload-sub">Drag and drop, take a photo, or click to browse</p>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); padding: 4px 12px; background: rgba(255,255,255,0.05); border-radius: 50px;">JPG, PNG, WEBP · auto-compressed to save mobile data</span>
                     <input type="file" id="main-file-input" accept="image/*">
                 </div>
-                
+
+                <!-- Single-leaf preview -->
                 <div class="upload-preview" id="main-preview">
                     <div class="preview-container">
                         <div class="preview-thumb" style="width: 180px; height: 180px;">
@@ -31,28 +47,61 @@
                         <div class="preview-info">
                             <div class="preview-filename" id="main-filename" style="font-size: 1.1rem;"></div>
                             <div class="preview-filesize" id="main-filesize"></div>
-                            <button class="btn-predict" id="main-predict-btn" onclick="predictMain()" style="margin-top: 10px;">
-                                🔬 Launch Analysis
-                            </button>
+                            <div class="data-saver" id="data-saver" hidden></div>
+                            <button class="btn-predict" id="main-predict-btn" type="button" style="margin-top: 10px;">🔬 Launch Analysis</button>
+                            <button class="mini-btn ghost" id="change-photo" type="button" style="margin-top: 10px;">Choose another photo</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Whole-plant preview -->
+                <div class="plant-preview" id="plant-preview" hidden>
+                    <div class="plant-thumbs" id="plant-thumbs"></div>
+                    <div class="data-saver" id="plant-data-saver" hidden></div>
+                    <div class="plant-actions">
+                        <button class="btn-predict" id="plant-predict-btn" type="button">🔬 Check whole plant</button>
+                        <button class="mini-btn ghost" id="plant-add" type="button">+ Add leaves</button>
                     </div>
                 </div>
 
                 <div class="spinner" id="main-spinner" style="padding: 50px 0;">
                     <div class="spinner-circle" style="width: 50px; height: 50px;"></div>
-                    <p style="font-size: 1rem;">Model is extracting features and running inference...</p>
+                    <p style="font-size: 1rem;" id="spinner-text">Checking photo quality, finding the leaf, running the AI model…</p>
+                </div>
+
+                <!-- Whole-plant summary -->
+                <div class="plant-summary" id="plant-summary" hidden>
+                    <div class="result-label">Whole-plant result</div>
+                    <div class="plant-summary-head">
+                        <div class="result-name" id="plant-name" style="font-size: 1.8rem;"></div>
+                        <div class="plant-stats" id="plant-stats"></div>
+                    </div>
+                    <div class="plant-leaves" id="plant-leaves"></div>
+                    <p class="plant-hint">Tap a leaf to see its full scan below.</p>
                 </div>
 
                 <div class="result-card" id="main-result">
                     <div class="result-header">
                         <div class="result-icon" id="main-result-icon" style="width: 60px; height: 60px; font-size: 2rem;">🍃</div>
                         <div>
-                            <div class="result-label">Diagnosis Confirmed</div>
+                            <div class="result-label" id="main-result-label">Diagnosis</div>
                             <div class="result-name" id="main-result-name" style="font-size: 2rem;"></div>
                         </div>
                     </div>
-                    
-                    <div class="result-confidence" style="margin-bottom: 30px;">
+
+                    <!-- NEW: one clear decision -->
+                    <div class="verdict" id="verdict" hidden>
+                        <div class="verdict-icon" id="verdict-icon"></div>
+                        <div class="verdict-body">
+                            <div class="verdict-title" id="verdict-title"></div>
+                            <div class="verdict-recheck" id="verdict-recheck"></div>
+                            <div class="verdict-call" id="verdict-call"></div>
+                        </div>
+                        <button class="voice-btn" id="voice-btn" type="button" aria-label="Read advice aloud">🔊 <span id="voice-label">Listen</span></button>
+                    </div>
+                    <div class="voice-note" id="voice-note" hidden></div>
+
+                    <div class="result-confidence" id="confidence-block" style="margin-bottom: 8px;">
                         <span style="font-size:0.9rem; color:var(--text-secondary); display:flex; justify-content:space-between;">
                             <span>Model Confidence:</span>
                             <strong id="main-confidence-val" style="font-size:1.1rem;"></strong>
@@ -61,18 +110,69 @@
                             <div class="confidence-fill" id="main-confidence-bar"></div>
                         </div>
                     </div>
-                    
+                    <div class="model-badge" id="model-badge"></div>
+
+                    <!-- Lesion scan + severity gauge -->
+                    <div class="scan-section" id="scan-section" style="display:none;">
+                        <div class="scan-heading">
+                            <span>🔥 AI Lesion Scan</span>
+                            <small>Drag the slider to compare</small>
+                        </div>
+                        <div class="scan-grid">
+                            <div class="compare" id="compare">
+                                <img id="scan-original" alt="Original leaf">
+                                <div class="compare-top"><img id="scan-overlay" alt="Lesion heatmap"></div>
+                                <div class="compare-handle"></div>
+                                <span class="compare-tag left">Original</span>
+                                <span class="compare-tag right">AI Scan</span>
+                            </div>
+                            <div class="gauge">
+                                <svg viewBox="0 0 120 120" aria-label="Leaf area affected">
+                                    <circle class="gauge-track" cx="60" cy="60" r="50" fill="none" stroke-width="10"/>
+                                    <circle class="gauge-fill" id="gauge-fill" cx="60" cy="60" r="50" fill="none"
+                                            stroke-width="10" stroke-linecap="round"
+                                            stroke-dasharray="314.16" stroke-dashoffset="314.16"
+                                            transform="rotate(-90 60 60)"/>
+                                    <text class="gauge-value" id="gauge-value" x="60" y="60" text-anchor="middle" dominant-baseline="central">0%</text>
+                                </svg>
+                                <div class="gauge-info">
+                                    <div class="gauge-sub" id="gauge-sub">Leaf area affected</div>
+                                    <div class="severity-badge" id="severity-badge">—</div>
+                                    <div class="severity-meta" id="severity-meta"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Farmer action card (multilingual) -->
+                    <div class="farmer-card" id="farmer-card" style="display:none;">
+                        <div class="farmer-card-top">
+                            <div class="farmer-card-title" id="farmer-card-title">👨‍🌾 What to do now</div>
+                            <div class="lang-pills" id="lang-pills"></div>
+                        </div>
+                        <div class="farmer-card-name" id="farmer-card-name"></div>
+                        <ol class="farmer-steps" id="farmer-steps"></ol>
+                        <div class="farmer-dose" id="farmer-dose"></div>
+                    </div>
+
+                    <!-- NEW: share + outbreak map -->
+                    <div class="result-actions" id="result-actions" hidden>
+                        <button class="action-btn whatsapp" id="share-btn" type="button">💬 Send to KVK / officer on WhatsApp</button>
+                        <button class="action-btn" id="map-btn" type="button">📍 Add to outbreak map</button>
+                    </div>
+                    <div class="map-note" id="map-note" hidden></div>
+
                     <div class="result-description">
                         <strong>📋 Biological Description</strong>
                         <span id="main-result-desc" style="font-size: 1rem;"></span>
                     </div>
-                    
+
                     <div class="result-recommendation" style="margin-bottom: 30px;">
                         <strong>💊 Agronomic Recommendation</strong>
                         <span id="main-result-rec" style="font-size: 1rem;"></span>
                     </div>
-                    
-                    <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">Probability Distribution</h4>
+
+                    <h4 id="prob-heading" style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">Probability Distribution</h4>
                     <div class="prob-bars" id="main-prob-bars"></div>
                 </div>
             </div>
@@ -81,19 +181,30 @@
             <div class="predict-sidebar fade-in" style="animation-delay: 0.2s;">
                 <div class="sidebar-card">
                     <h3>✅ Best Practices for Photos</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">For the highest accuracy, please follow these guidelines when taking photos of coffee leaves.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">CoffeeGuard checks every photo first and tells you exactly what to fix if it's too blurry, dark or small.</p>
                     <ul class="tip-list">
                         <li><span class="tip-icon">✓</span> Ensure the leaf is flat and well-lit.</li>
                         <li><span class="tip-icon">✓</span> Avoid harsh shadows or direct sun reflections.</li>
-                        <li><span class="tip-icon">✓</span> Center the lesion or diseased area in the frame.</li>
-                        <li><span class="tip-icon">✓</span> Standardize a plain background (like white paper or ground soil) if possible.</li>
+                        <li><span class="tip-icon">✓</span> Fill most of the frame with one leaf.</li>
+                        <li><span class="tip-icon">✓</span> For a whole plant, take 3–5 leaves from different branches.</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3>🧭 Why CoffeeGuard is different</h3>
+                    <ul class="tip-list">
+                        <li><span class="tip-icon">✓</span> Shows <b>where</b> the disease is and <b>how much</b> of the leaf it covers.</li>
+                        <li><span class="tip-icon">✓</span> Gives one clear decision: treat now, treat this week, or watch.</li>
+                        <li><span class="tip-icon">✓</span> Reads advice aloud in Hindi, Kannada and Malayalam.</li>
+                        <li><span class="tip-icon">✓</span> Works on weak signal: compresses photos and queues them offline.</li>
+                        <li><span class="tip-icon">✓</span> Says “Not sure” instead of guessing.</li>
                     </ul>
                 </div>
 
                 <div class="sidebar-card" style="background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.2);">
                     <h3 style="color: var(--green-400);">🛡️ Data Privacy</h3>
                     <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;">
-                        All images uploaded to CoffeeGuard AI are processed entirely in memory and immediately discarded. We do not store, distribute, or retain your crop images on our servers. Your agricultural data is 100% private.
+                        Photos are processed in memory and immediately discarded — never stored. The outbreak map is opt-in and keeps only the disease, severity and an approximate location (~1 km).
                     </p>
                 </div>
             </div>
@@ -103,143 +214,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    const mainFileInput = document.getElementById('main-file-input');
-    const mainUploadZone = document.getElementById('main-upload-zone');
-    const mainPreview = document.getElementById('main-preview');
-    let mainSelectedFile = null;
-
-    mainFileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        mainSelectedFile = file;
-        showMainPreview(file);
-    });
-
-    mainUploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        mainUploadZone.classList.add('drag-over');
-    });
-    mainUploadZone.addEventListener('dragleave', () => {
-        mainUploadZone.classList.remove('drag-over');
-    });
-    mainUploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        mainUploadZone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            mainSelectedFile = file;
-            showMainPreview(file);
-        }
-    });
-
-    function showMainPreview(file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('main-preview-img').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-        document.getElementById('main-filename').textContent = file.name;
-        document.getElementById('main-filesize').textContent = (file.size / 1024).toFixed(1) + ' KB';
-        mainPreview.classList.add('active');
-        document.getElementById('main-result').classList.remove('active');
-        mainUploadZone.style.display = 'none';
-    }
-
-    function predictMain() {
-        if (!mainSelectedFile) return;
-
-        const btn = document.getElementById('main-predict-btn');
-        const spinner = document.getElementById('main-spinner');
-        const result = document.getElementById('main-result');
-
-        btn.disabled = true;
-        btn.textContent = 'Analyzing...';
-        spinner.classList.add('active');
-        result.classList.remove('active');
-
-        const formData = new FormData();
-        formData.append('file', mainSelectedFile);
-
-        fetch('/api/predict', {
-            method: 'POST',
-            body: formData
-        })
-        .then(async res => {
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
-                return res.json().then(data => ({ status: res.status, ok: res.ok, data }));
-            } else {
-                const text = await res.text();
-                throw new Error(`Server returned non-JSON response (Status ${res.status}): ${text.substring(0, 100)}...`);
-            }
-        })
-        .then(({ status, ok, data }) => {
-            spinner.classList.remove('active');
-            btn.disabled = false;
-            btn.textContent = '🔬 Re-Analyze Leaf';
-
-            if (!ok || data.error) {
-                showMainNotice('⚠️', 'Image Not Recognized', '#f59e0b',
-                    data.message || 'Something went wrong while analyzing this image.',
-                    'Please upload a clear, close-up photo of a single coffee leaf.');
-                return;
-            }
-
-            const icons = { Healthy: '✅', Miner: '🟡', Phoma: '🔴', Rust: '🟠', Uncertain: '❓' };
-            document.getElementById('main-confidence-val').closest('.result-confidence').style.display = '';
-            document.getElementById('main-prob-bars').style.display = '';
-            document.getElementById('main-result-icon').textContent = icons[data.prediction] || '🍃';
-            document.getElementById('main-result-icon').style.background = data.color + '22';
-            document.getElementById('main-result-name').textContent = data.prediction;
-            document.getElementById('main-result-name').style.color = data.color;
-            document.getElementById('main-confidence-val').textContent = data.confidence + '%';
-            document.getElementById('main-confidence-bar').style.width = data.confidence + '%';
-            document.getElementById('main-confidence-bar').style.background = data.color;
-            document.getElementById('main-result-desc').textContent = data.description;
-            document.getElementById('main-result-rec').textContent = data.recommendation;
-
-            const probBars = document.getElementById('main-prob-bars');
-            probBars.innerHTML = '';
-            for (const [label, prob] of Object.entries(data.probabilities)) {
-                probBars.innerHTML += `
-                    <div class="prob-item">
-                        <span class="prob-label">${label}</span>
-                        <div class="prob-bar">
-                            <div class="prob-fill ${label.toLowerCase()}" style="width: ${prob}%"></div>
-                        </div>
-                        <span class="prob-value">${prob}%</span>
-                    </div>
-                `;
-            }
-
-            result.classList.add('active');
-        })
-        .catch(err => {
-            spinner.classList.remove('active');
-            btn.disabled = false;
-            btn.textContent = '🔬 Launch Analysis';
-            showMainNotice('❌', 'Something Went Wrong', '#ef4444', err.message, 'Please try again in a moment.');
-        });
-    }
-
-    // Shows a non-prediction notice (not-a-leaf, network error, etc.) inline
-    // in the same result card, instead of a browser alert() popup.
-    function showMainNotice(icon, title, color, description, recommendation) {
-        const result = document.getElementById('main-result');
-        document.getElementById('main-result-icon').textContent = icon;
-        document.getElementById('main-result-icon').style.background = color + '22';
-        document.getElementById('main-result-name').textContent = title;
-        document.getElementById('main-result-name').style.color = color;
-        document.getElementById('main-result-desc').textContent = description;
-        document.getElementById('main-result-rec').textContent = recommendation;
-        // Confidence bar and probability breakdown don't apply here
-        document.getElementById('main-confidence-val').closest('.result-confidence').style.display = 'none';
-        document.getElementById('main-prob-bars').style.display = 'none';
-        document.getElementById('main-prob-bars').innerHTML = '';
-        result.classList.add('active');
-    }
-
-    // Double observer code removed since it is now present globally in base.html
-</script>
+<script src="{{ url_for('static', filename='js/predict.js') }}"></script>
 {% endblock %}

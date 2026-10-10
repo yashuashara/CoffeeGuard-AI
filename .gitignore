@@ -2,3 +2,8 @@ model_opt.pkl.gz
 scaler_opt.pkl.gz
 __pycache__/
 *.pyc
+
+# local runtime data (outbreak map database)
+data/
+__pycache__/
+*.pyc
