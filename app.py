@@ -28,6 +28,17 @@ from translations import farmer_card, LANGUAGES
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024  # 12 MB upload limit
 
+
+@app.url_defaults
+def static_cache_bust(endpoint, values):
+    # Every url_for('static', ...) gets ?v=<file modified time>. Each deploy changes
+    # the URL, so browsers and the offline service worker can never serve old CSS/JS.
+    if endpoint == 'static' and 'filename' in values:
+        try:
+            values['v'] = int(os.stat(os.path.join(app.static_folder, values['filename'])).st_mtime)
+        except OSError:
+            pass
+
 # ───────────────────────── Model ─────────────────────────
 # v2 (default): MobileNetV2 transfer learning + leaf crop + zoom tiles + lesion features.
 # Falls back to the original 64x64-pixel SVM + XGBoost model if v2 files are missing
