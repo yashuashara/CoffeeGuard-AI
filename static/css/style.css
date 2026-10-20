@@ -898,6 +898,16 @@ img {
     cursor: pointer;
 }
 
+/* Sits above the invisible full-zone file input so it gets the tap */
+.upload-zone .camera-btn {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 18px;
+    font-size: 1rem;
+}
+
 /* Preview */
 .upload-preview {
     display: none;

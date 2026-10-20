@@ -36,6 +36,9 @@
                     <p style="margin-bottom: 16px;" id="upload-sub">Drag and drop, take a photo, or click to browse</p>
                     <span style="font-size: 0.75rem; color: var(--text-muted); padding: 4px 12px; background: rgba(255,255,255,0.05); border-radius: 50px;">JPG, PNG, WEBP · auto-compressed to save mobile data</span>
                     <input type="file" id="main-file-input" accept="image/*">
+                    <!-- Dedicated camera input: never "multiple", so Android always opens the camera -->
+                    <button class="mini-btn camera-btn" id="camera-btn" type="button">📷 Take photo</button>
+                    <input type="file" id="camera-input" accept="image/*" capture="environment" hidden>
                 </div>
 
                 <!-- Single-leaf preview -->
@@ -61,6 +64,7 @@
                     <div class="plant-actions">
                         <button class="btn-predict" id="plant-predict-btn" type="button">🔬 Check whole plant</button>
                         <button class="mini-btn ghost" id="plant-add" type="button">+ Add leaves</button>
+                        <button class="mini-btn ghost" id="plant-camera" type="button">📷 Add with camera</button>
                     </div>
                 </div>
 

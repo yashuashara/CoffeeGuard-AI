@@ -201,6 +201,15 @@
   $("change-photo").onclick = () => { resetView(); input.value = ""; input.click(); };
   $("plant-add").onclick = () => { input.value = ""; input.click(); };
 
+  // Camera: a separate input without "multiple". Android browsers hide the
+  // Camera option when a file input allows multiple files (Whole-plant mode),
+  // so this one always goes straight to the camera.
+  const cam = $("camera-input");
+  cam.addEventListener("change", (e) => takeFiles([...e.target.files]));
+  const openCamera = (e) => { e.preventDefault(); e.stopPropagation(); cam.value = ""; cam.click(); };
+  $("camera-btn").addEventListener("click", openCamera);
+  $("plant-camera").addEventListener("click", openCamera);
+
   function takeFiles(files) {
     if (!files.length) return;
     if (mode === "single") {
@@ -236,6 +245,7 @@
       box.appendChild(d);
     });
     $("plant-add").hidden = plantFiles.length >= 5;
+    $("plant-camera").hidden = plantFiles.length >= 5;
     $("plant-predict-btn").disabled = plantFiles.length < 1;
     $("plant-predict-btn").textContent = plantFiles.length < 3
       ? `🔬 Check ${plantFiles.length} leaf${plantFiles.length > 1 ? "ves" : ""} (3–5 recommended)`
