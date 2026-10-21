@@ -10,19 +10,19 @@
     en: { scans: "scans", plants: "plants", due: "due for re-check", dueBadge: "⏰ Re-check due", next: "Next check",
           latest: "Latest", example: "EXAMPLE", report: "🖼️ Share report image", pdf: "📑 Download PDF", pdfOk: "✅ PDF saved — print it or send it to your KVK officer.", remind: "⏰ Remind me", del: "🗑️ Delete this scan",
           confirmClear: "Delete ALL saved scans from this phone?", confirmDel: "Delete this scan?", restored: "Restored {n} scan(s).",
-          demoDone: "Example plant added (marked EXAMPLE). Tap a scan to see its report.", what: "What to do", conf: "confidence" },
+          demoDone: "Example plant added (marked EXAMPLE). Tap a scan to see its report.", recheck: "📷 Re-check this plant", noGraph: "📈 Re-check this plant (in 10–15 days) to see its progress graph here.", what: "What to do", conf: "confidence" },
     hi: { scans: "जाँचें", plants: "पौधे", due: "दोबारा जाँच बाकी", dueBadge: "⏰ दोबारा जाँच का समय", next: "अगली जाँच",
           latest: "नवीनतम", example: "उदाहरण", report: "🖼️ रिपोर्ट फ़ोटो भेजें", pdf: "📑 PDF डाउनलोड करें", pdfOk: "✅ PDF सेव हुई — प्रिंट करें या KVK अधिकारी को भेजें।", remind: "⏰ याद दिलाएँ", del: "🗑️ यह जाँच हटाएँ",
           confirmClear: "इस फ़ोन से सभी सेव जाँचें हटाएँ?", confirmDel: "यह जाँच हटाएँ?", restored: "{n} जाँच(ें) वापस लाई गईं।",
-          demoDone: "उदाहरण पौधा जोड़ा गया (उदाहरण चिह्नित)।", what: "क्या करें", conf: "विश्वास" },
+          demoDone: "उदाहरण पौधा जोड़ा गया (उदाहरण चिह्नित)।", recheck: "📷 इस पौधे की दोबारा जाँच करें", noGraph: "📈 इस पौधे की 10–15 दिन बाद दोबारा जाँच करें — प्रगति ग्राफ़ यहाँ दिखेगा।", what: "क्या करें", conf: "विश्वास" },
     kn: { scans: "ಪರೀಕ್ಷೆಗಳು", plants: "ಗಿಡಗಳು", due: "ಮರುಪರೀಕ್ಷೆ ಬಾಕಿ", dueBadge: "⏰ ಮರುಪರೀಕ್ಷೆಯ ಸಮಯ", next: "ಮುಂದಿನ ಪರೀಕ್ಷೆ",
           latest: "ಇತ್ತೀಚಿನದು", example: "ಉದಾಹರಣೆ", report: "🖼️ ವರದಿ ಚಿತ್ರ ಹಂಚಿಕೊಳ್ಳಿ", pdf: "📑 PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", pdfOk: "✅ PDF ಉಳಿಸಲಾಗಿದೆ — ಮುದ್ರಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ಕಳುಹಿಸಿ.", remind: "⏰ ನೆನಪಿಸಿ", del: "🗑️ ಈ ಪರೀಕ್ಷೆ ಅಳಿಸಿ",
           confirmClear: "ಈ ಫೋನ್‌ನಿಂದ ಎಲ್ಲಾ ಪರೀಕ್ಷೆಗಳನ್ನು ಅಳಿಸಬೇಕೇ?", confirmDel: "ಈ ಪರೀಕ್ಷೆ ಅಳಿಸಬೇಕೇ?", restored: "{n} ಪರೀಕ್ಷೆ(ಗಳು) ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ.",
-          demoDone: "ಉದಾಹರಣೆ ಗಿಡ ಸೇರಿಸಲಾಗಿದೆ (ಉದಾಹರಣೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ).", what: "ಏನು ಮಾಡಬೇಕು", conf: "ವಿಶ್ವಾಸ" },
+          demoDone: "ಉದಾಹರಣೆ ಗಿಡ ಸೇರಿಸಲಾಗಿದೆ (ಉದಾಹರಣೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ).", recheck: "📷 ಈ ಗಿಡವನ್ನು ಮತ್ತೆ ಪರೀಕ್ಷಿಸಿ", noGraph: "📈 10–15 ದಿನಗಳ ನಂತರ ಈ ಗಿಡವನ್ನು ಮತ್ತೆ ಪರೀಕ್ಷಿಸಿ — ಪ್ರಗತಿ ಗ್ರಾಫ್ ಇಲ್ಲಿ ಕಾಣಿಸುತ್ತದೆ.", what: "ಏನು ಮಾಡಬೇಕು", conf: "ವಿಶ್ವಾಸ" },
     ml: { scans: "പരിശോധനകൾ", plants: "ചെടികൾ", due: "വീണ്ടും പരിശോധിക്കാനുണ്ട്", dueBadge: "⏰ വീണ്ടും പരിശോധിക്കാൻ സമയമായി", next: "അടുത്ത പരിശോധന",
           latest: "ഏറ്റവും പുതിയത്", example: "ഉദാഹരണം", report: "🖼️ റിപ്പോർട്ട് ചിത്രം പങ്കിടുക", pdf: "📑 PDF ഡൗൺലോഡ് ചെയ്യുക", pdfOk: "✅ PDF സേവ് ചെയ്തു — പ്രിന്റ് ചെയ്യുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥന് അയക്കുക.", remind: "⏰ ഓർമ്മിപ്പിക്കുക", del: "🗑️ ഈ പരിശോധന ഇല്ലാതാക്കുക",
           confirmClear: "ഈ ഫോണിൽ നിന്ന് എല്ലാ പരിശോധനകളും ഇല്ലാതാക്കണോ?", confirmDel: "ഈ പരിശോധന ഇല്ലാതാക്കണോ?", restored: "{n} പരിശോധന(കൾ) പുനഃസ്ഥാപിച്ചു.",
-          demoDone: "ഉദാഹരണ ചെടി ചേർത്തു (ഉദാഹരണം എന്ന് അടയാളപ്പെടുത്തി).", what: "എന്ത് ചെയ്യണം", conf: "വിശ്വാസ്യത" },
+          demoDone: "ഉദാഹരണ ചെടി ചേർത്തു (ഉദാഹരണം എന്ന് അടയാളപ്പെടുത്തി).", recheck: "📷 ഈ ചെടി വീണ്ടും പരിശോധിക്കുക", noGraph: "📈 10–15 ദിവസത്തിന് ശേഷം ഈ ചെടി വീണ്ടും പരിശോധിക്കുക — പുരോഗതി ഗ്രാഫ് ഇവിടെ കാണാം.", what: "എന്ത് ചെയ്യണം", conf: "വിശ്വാസ്യത" },
   };
   let lang = "en";
   try { lang = localStorage.getItem("cg-lang") || "en"; } catch (e) {}
@@ -92,8 +92,18 @@
             <span class="trend-badge" style="--t:${tr.color}">${tr.icon} ${esc(D.w(lang, tr.key))}</span>
           </div>
         </header>
-        ${chart(list)}
-        <div class="pg-scans"></div>`;
+        ${list.length > 1 ? chart(list) : `<div class="chart-empty">${esc(t("noGraph"))}</div>`}
+        <div class="pg-scans"></div>
+        ${last.demo ? "" : `<button type="button" class="recheck-btn">${esc(t("recheck"))}</button>`}`;
+      const rb = el.querySelector(".recheck-btn");
+      if (rb) rb.onclick = async () => {
+        let name = plant;
+        if (plant.startsWith("My plant#")) {            // old scan saved before plants had names
+          name = await D.nextPlantName();
+          const r = await D.get(last.id); r.plant = name; await D.put(r);
+        }
+        location.href = "/predict?plant=" + encodeURIComponent(name);
+      };
       const sc = el.querySelector(".pg-scans");
       list.slice().reverse().forEach((r) => {
         const b = document.createElement("button");
