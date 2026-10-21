@@ -6,16 +6,16 @@
   const $ = (id) => document.getElementById(id);
   const D = window.CGDiary;
   const L = {
-    en: { saved: "✅ Saved to My Scans on this phone", which: "Which plant is this?", report: "🖼️ Share report image", pdf: "📑 Download PDF", pdfOk: "✅ PDF saved — print it or send it to your KVK officer.",
+    en: { saved: "✅ Saved to My Scans on this phone", which: "Which plant is this? (choose the same name to re-check a plant)", report: "🖼️ Share report image", pdf: "📑 Download PDF", pdfOk: "✅ PDF saved — print it or send it to your KVK officer.",
           remind: "⏰ Remind me to re-check", making: "Making report…", done: "✅ Report saved — share it on WhatsApp or show it to your KVK officer.",
           shared: "✅ Report shared.", notSaved: "Not saved — retake a clearer photo to get a result worth keeping." },
-    hi: { saved: "✅ इस फ़ोन पर 'मेरी जाँचें' में सेव हुआ", which: "यह कौन सा पौधा है?", report: "🖼️ रिपोर्ट फ़ोटो भेजें", pdf: "📑 PDF डाउनलोड करें", pdfOk: "✅ PDF सेव हुई — प्रिंट करें या KVK अधिकारी को भेजें।",
+    hi: { saved: "✅ इस फ़ोन पर 'मेरी जाँचें' में सेव हुआ", which: "यह कौन सा पौधा है? (दोबारा जाँच के लिए वही नाम चुनें)", report: "🖼️ रिपोर्ट फ़ोटो भेजें", pdf: "📑 PDF डाउनलोड करें", pdfOk: "✅ PDF सेव हुई — प्रिंट करें या KVK अधिकारी को भेजें।",
           remind: "⏰ दोबारा जाँच की याद दिलाएँ", making: "रिपोर्ट बन रही है…", done: "✅ रिपोर्ट सेव हुई — WhatsApp पर भेजें या KVK अधिकारी को दिखाएँ।",
           shared: "✅ रिपोर्ट भेजी गई।", notSaved: "सेव नहीं हुआ — साफ़ फ़ोटो दोबारा लें।" },
-    kn: { saved: "✅ ಈ ಫೋನ್‌ನಲ್ಲಿ 'ನನ್ನ ಪರೀಕ್ಷೆಗಳು' ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ", which: "ಇದು ಯಾವ ಗಿಡ?", report: "🖼️ ವರದಿ ಚಿತ್ರ ಹಂಚಿಕೊಳ್ಳಿ", pdf: "📑 PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", pdfOk: "✅ PDF ಉಳಿಸಲಾಗಿದೆ — ಮುದ್ರಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ಕಳುಹಿಸಿ.",
+    kn: { saved: "✅ ಈ ಫೋನ್‌ನಲ್ಲಿ 'ನನ್ನ ಪರೀಕ್ಷೆಗಳು' ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ", which: "ಇದು ಯಾವ ಗಿಡ? (ಮರುಪರೀಕ್ಷೆಗೆ ಅದೇ ಹೆಸರನ್ನು ಆರಿಸಿ)", report: "🖼️ ವರದಿ ಚಿತ್ರ ಹಂಚಿಕೊಳ್ಳಿ", pdf: "📑 PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", pdfOk: "✅ PDF ಉಳಿಸಲಾಗಿದೆ — ಮುದ್ರಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ಕಳುಹಿಸಿ.",
           remind: "⏰ ಮರುಪರೀಕ್ಷೆಗೆ ನೆನಪಿಸಿ", making: "ವರದಿ ಸಿದ್ಧವಾಗುತ್ತಿದೆ…", done: "✅ ವರದಿ ಉಳಿಸಲಾಗಿದೆ — WhatsApp ನಲ್ಲಿ ಕಳುಹಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ತೋರಿಸಿ.",
           shared: "✅ ವರದಿ ಹಂಚಿಕೊಳ್ಳಲಾಗಿದೆ.", notSaved: "ಉಳಿಸಿಲ್ಲ — ಸ್ಪಷ್ಟ ಫೋಟೋ ಮತ್ತೆ ತೆಗೆಯಿರಿ." },
-    ml: { saved: "✅ ഈ ഫോണിൽ 'എന്റെ പരിശോധനകൾ' എന്നതിൽ സേവ് ചെയ്തു", which: "ഇത് ഏത് ചെടിയാണ്?", report: "🖼️ റിപ്പോർട്ട് ചിത്രം പങ്കിടുക", pdf: "📑 PDF ഡൗൺലോഡ് ചെയ്യുക", pdfOk: "✅ PDF സേവ് ചെയ്തു — പ്രിന്റ് ചെയ്യുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥന് അയക്കുക.",
+    ml: { saved: "✅ ഈ ഫോണിൽ 'എന്റെ പരിശോധനകൾ' എന്നതിൽ സേവ് ചെയ്തു", which: "ഇത് ഏത് ചെടിയാണ്? (വീണ്ടും പരിശോധിക്കാൻ അതേ പേര് തിരഞ്ഞെടുക്കുക)", report: "🖼️ റിപ്പോർട്ട് ചിത്രം പങ്കിടുക", pdf: "📑 PDF ഡൗൺലോഡ് ചെയ്യുക", pdfOk: "✅ PDF സേവ് ചെയ്തു — പ്രിന്റ് ചെയ്യുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥന് അയക്കുക.",
           remind: "⏰ വീണ്ടും പരിശോധിക്കാൻ ഓർമ്മിപ്പിക്കുക", making: "റിപ്പോർട്ട് തയ്യാറാക്കുന്നു…", done: "✅ റിപ്പോർട്ട് സേവ് ചെയ്തു — WhatsApp-ൽ അയക്കുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥനെ കാണിക്കുക.",
           shared: "✅ റിപ്പോർട്ട് പങ്കിട്ടു.", notSaved: "സേവ് ചെയ്തില്ല — വ്യക്തമായ ഫോട്ടോ വീണ്ടും എടുക്കുക." },
   };
@@ -61,7 +61,7 @@
     if (data.prediction === "Uncertain") { box.hidden = true; return; }
     try {
       if (!data._diaryId) {                       // save each result only once
-        const r = D.fromResult(data, store.get("cg-plant", ""));
+        const r = D.fromResult(data, await D.nextPlantName());   // each new photo = its own plant
         r.id = await D.save(r);
         data._diaryId = r.id;
       }

@@ -47,8 +47,12 @@
   function chart(scans) {
     if (scans.length < 2) return "";
     const W = 320, H = 110, P = 24, max = Math.max(10, ...scans.map(D.sev)) * 1.15;
-    const t0 = scans[0].ts, t1 = scans[scans.length - 1].ts || t0 + 1;
-    const x = (r) => P + ((r.ts - t0) / Math.max(1, t1 - t0)) * (W - 2 * P);
+    const t0 = scans[0].ts, t1 = scans[scans.length - 1].ts;
+    // evenly spaced points, so scans taken minutes apart don't overlap
+    const idx = new Map(scans.map((r, i) => [r, i]));
+    const x = (r) => P + (idx.get(r) / (scans.length - 1)) * (W - 2 * P);
+    const sameDay = new Date(t0).toDateString() === new Date(t1).toDateString();
+    const lbl = (ts) => (sameDay ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : D.fmtDate(ts, lang));
     const y = (r) => H - P - (D.sev(r) / max) * (H - 2 * P);
     const pts = scans.map((r) => `${x(r).toFixed(1)},${y(r).toFixed(1)}`).join(" ");
     const dots = scans.map((r) => `<circle cx="${x(r).toFixed(1)}" cy="${y(r).toFixed(1)}" r="5" fill="${r.color || "#22c55e"}"/>
@@ -56,14 +60,14 @@
     return `<svg class="h-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Leaf area affected over time">
       <line x1="${P}" y1="${H - P}" x2="${W - P}" y2="${H - P}" class="h-axis"/>
       <polyline points="${pts}" fill="none" stroke="#4ade80" stroke-width="3" stroke-linejoin="round"/>${dots}
-      <text x="${P}" y="${H - 6}">${esc(D.fmtDate(t0, lang))}</text>
-      <text x="${W - P}" y="${H - 6}" text-anchor="end">${esc(D.fmtDate(t1, lang))}</text></svg>`;
+      <text x="${P}" y="${H - 6}">${esc(lbl(t0))}</text>
+      <text x="${W - P}" y="${H - 6}" text-anchor="end">${esc(lbl(t1))}</text></svg>`;
   }
 
   async function render() {
     const scans = await D.all();
     const byPlant = {};
-    scans.forEach((r) => (byPlant[r.plant] = byPlant[r.plant] || []).push(r));
+    scans.forEach((r) => { const k = D.groupKey(r); (byPlant[k] = byPlant[k] || []).push(r); });
     const now = Date.now();
     const due = Object.values(byPlant).filter((list) => { const l = list[list.length - 1]; return l.verdict && l.verdict.recheck_days && D.recheckTs(l) <= now; }).length;
     $("h-empty").hidden = scans.length > 0;
@@ -75,11 +79,12 @@
     Object.entries(byPlant).sort((a, b) => b[1][b[1].length - 1].ts - a[1][a[1].length - 1].ts).forEach(([plant, list]) => {
       const last = list[list.length - 1], prev = list.length > 1 ? list[list.length - 2] : null;
       const tr = D.trend(last, prev), isDue = last.verdict && last.verdict.recheck_days && D.recheckTs(last) <= now;
+      const shown = plant.startsWith("My plant#") ? `Leaf scan · ${D.fmtDate(last.ts, lang)} ${new Date(last.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : plant;
       const el = document.createElement("article");
       el.className = "plant-group";
       el.innerHTML = `
         <header class="pg-head">
-          <div><h3>🌱 ${esc(plant)} ${last.demo ? `<span class="demo-tag">${esc(t("example"))}</span>` : ""}</h3>
+          <div><h3>🌱 ${esc(shown)} ${last.demo ? `<span class="demo-tag">${esc(t("example"))}</span>` : ""}</h3>
             <div class="pg-latest">${esc(t("latest"))}: <b style="color:${last.color}">${esc(nameOf(last))}</b> · ${D.sev(last)}%
               · <span style="color:${last.verdict ? last.verdict.color : "#9ca3af"}">${last.verdict ? esc(last.verdict.icon + " " + (last.verdict.text[lang] || last.verdict.text.en).title) : ""}</span></div></div>
           <div class="pg-badges">

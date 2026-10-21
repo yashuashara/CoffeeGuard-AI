@@ -84,8 +84,18 @@
     if (d >= 2) return { key: "worse", icon: "📈", color: "#ef4444", d };
     return { key: "stable", icon: "➖", color: "#eab308", d };
   }
+  // Old builds saved every scan as "My plant"; treat each of those as its own plant
+  const LEGACY = "My plant";
+  const groupKey = (r) => (r.plant === LEGACY ? LEGACY + "#" + r.id : r.plant);
+  // New scans get their own plant ("Plant 1", "Plant 2", ...) unless the farmer picks an existing name
+  async function nextPlantName() {
+    const names = new Set((await all()).map((r) => r.plant));
+    let n = 1;
+    while (names.has("Plant " + n)) n++;
+    return "Plant " + n;
+  }
   async function previousOf(rec) {
-    const same = (await all()).filter((r) => r.plant === rec.plant && r.ts < rec.ts && r.id !== rec.id);
+    const same = (await all()).filter((r) => groupKey(r) === groupKey(rec) && r.ts < rec.ts && r.id !== rec.id);
     return same.length ? same[same.length - 1] : null;
   }
 
@@ -245,6 +255,6 @@
     return n;
   }
 
-  window.CGDiary = { save, put, get, del, all, clear, fromResult, trend, previousOf, reportCanvas, shareReport, downloadPdf,
+  window.CGDiary = { save, put, get, del, all, clear, fromResult, trend, previousOf, groupKey, nextPlantName, reportCanvas, shareReport, downloadPdf,
                      reminderUrl, exportAll, importFile, recheckTs, fmtDate, w, sev, card };
 })();
