@@ -173,6 +173,53 @@
     return "downloaded";
   }
 
+  // ───────── PDF report ─────────
+  // Builds a real PDF in the browser (no library, works offline): the report
+  // image is embedded as a JPEG on an A4-width page. Because the text is part of
+  // the image, Hindi / Kannada / Malayalam always display correctly.
+  function canvasToPdf(canvas) {
+    const jpeg = atob(canvas.toDataURL("image/jpeg", 0.92).split(",")[1]);
+    const pw = 595.28, ph = +(pw * canvas.height / canvas.width).toFixed(2);   // A4 width in points
+    const enc = new TextEncoder(), parts = [], offsets = [];
+    let size = 0;
+    const push = (x) => { const b = typeof x === "string" ? enc.encode(x) : x; parts.push(b); size += b.length; };
+    const bin = new Uint8Array(jpeg.length);
+    for (let i = 0; i < jpeg.length; i++) bin[i] = jpeg.charCodeAt(i);
+    const content = `q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+    const objs = [
+      "<< /Type /Catalog /Pages 2 0 R >>",
+      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`,
+      null, // image, written below
+      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    ];
+    push("%PDF-1.4\n%âãÏÓ\n");
+    objs.forEach((o, i) => {
+      offsets.push(size);
+      push(`${i + 1} 0 obj\n`);
+      if (o === null) {
+        push(`<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB ` +
+             `/BitsPerComponent 8 /Filter /DCTDecode /Length ${bin.length} >>\nstream\n`);
+        push(bin); push("\nendstream");
+      } else push(o);
+      push("\nendobj\n");
+    });
+    const xref = size;
+    push(`xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offsets.map((o) => String(o).padStart(10, "0") + " 00000 n \n").join(""));
+    push(`trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+    return new Blob(parts, { type: "application/pdf" });
+  }
+
+  async function downloadPdf(rec, lang) {
+    const canvas = await reportCanvas(rec, lang, await previousOf(rec));
+    const blob = canvasToPdf(canvas);
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = `CoffeeGuard-report-${new Date(rec.ts).toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    return "downloaded";
+  }
+
   // ───────── re-check reminder (Google Calendar) ─────────
   function reminderUrl(rec, lang) {
     const d = new Date(recheckTs(rec)), d2 = new Date(d.getTime() + 86400000);
@@ -198,6 +245,6 @@
     return n;
   }
 
-  window.CGDiary = { save, put, get, del, all, clear, fromResult, trend, previousOf, reportCanvas, shareReport,
+  window.CGDiary = { save, put, get, del, all, clear, fromResult, trend, previousOf, reportCanvas, shareReport, downloadPdf,
                      reminderUrl, exportAll, importFile, recheckTs, fmtDate, w, sev, card };
 })();

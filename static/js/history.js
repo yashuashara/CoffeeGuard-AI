@@ -8,19 +8,19 @@
   const LANGS = { en: "English", hi: "हिन्दी", kn: "ಕನ್ನಡ", ml: "മലയാളം" };
   const T = {
     en: { scans: "scans", plants: "plants", due: "due for re-check", dueBadge: "⏰ Re-check due", next: "Next check",
-          latest: "Latest", example: "EXAMPLE", report: "📄 Download report", remind: "⏰ Remind me", del: "🗑️ Delete this scan",
+          latest: "Latest", example: "EXAMPLE", report: "🖼️ Share report image", pdf: "📑 Download PDF", pdfOk: "✅ PDF saved — print it or send it to your KVK officer.", remind: "⏰ Remind me", del: "🗑️ Delete this scan",
           confirmClear: "Delete ALL saved scans from this phone?", confirmDel: "Delete this scan?", restored: "Restored {n} scan(s).",
           demoDone: "Example plant added (marked EXAMPLE). Tap a scan to see its report.", what: "What to do", conf: "confidence" },
     hi: { scans: "जाँचें", plants: "पौधे", due: "दोबारा जाँच बाकी", dueBadge: "⏰ दोबारा जाँच का समय", next: "अगली जाँच",
-          latest: "नवीनतम", example: "उदाहरण", report: "📄 रिपोर्ट डाउनलोड करें", remind: "⏰ याद दिलाएँ", del: "🗑️ यह जाँच हटाएँ",
+          latest: "नवीनतम", example: "उदाहरण", report: "🖼️ रिपोर्ट फ़ोटो भेजें", pdf: "📑 PDF डाउनलोड करें", pdfOk: "✅ PDF सेव हुई — प्रिंट करें या KVK अधिकारी को भेजें।", remind: "⏰ याद दिलाएँ", del: "🗑️ यह जाँच हटाएँ",
           confirmClear: "इस फ़ोन से सभी सेव जाँचें हटाएँ?", confirmDel: "यह जाँच हटाएँ?", restored: "{n} जाँच(ें) वापस लाई गईं।",
           demoDone: "उदाहरण पौधा जोड़ा गया (उदाहरण चिह्नित)।", what: "क्या करें", conf: "विश्वास" },
     kn: { scans: "ಪರೀಕ್ಷೆಗಳು", plants: "ಗಿಡಗಳು", due: "ಮರುಪರೀಕ್ಷೆ ಬಾಕಿ", dueBadge: "⏰ ಮರುಪರೀಕ್ಷೆಯ ಸಮಯ", next: "ಮುಂದಿನ ಪರೀಕ್ಷೆ",
-          latest: "ಇತ್ತೀಚಿನದು", example: "ಉದಾಹರಣೆ", report: "📄 ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", remind: "⏰ ನೆನಪಿಸಿ", del: "🗑️ ಈ ಪರೀಕ್ಷೆ ಅಳಿಸಿ",
+          latest: "ಇತ್ತೀಚಿನದು", example: "ಉದಾಹರಣೆ", report: "🖼️ ವರದಿ ಚಿತ್ರ ಹಂಚಿಕೊಳ್ಳಿ", pdf: "📑 PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", pdfOk: "✅ PDF ಉಳಿಸಲಾಗಿದೆ — ಮುದ್ರಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ಕಳುಹಿಸಿ.", remind: "⏰ ನೆನಪಿಸಿ", del: "🗑️ ಈ ಪರೀಕ್ಷೆ ಅಳಿಸಿ",
           confirmClear: "ಈ ಫೋನ್‌ನಿಂದ ಎಲ್ಲಾ ಪರೀಕ್ಷೆಗಳನ್ನು ಅಳಿಸಬೇಕೇ?", confirmDel: "ಈ ಪರೀಕ್ಷೆ ಅಳಿಸಬೇಕೇ?", restored: "{n} ಪರೀಕ್ಷೆ(ಗಳು) ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ.",
           demoDone: "ಉದಾಹರಣೆ ಗಿಡ ಸೇರಿಸಲಾಗಿದೆ (ಉದಾಹರಣೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ).", what: "ಏನು ಮಾಡಬೇಕು", conf: "ವಿಶ್ವಾಸ" },
     ml: { scans: "പരിശോധനകൾ", plants: "ചെടികൾ", due: "വീണ്ടും പരിശോധിക്കാനുണ്ട്", dueBadge: "⏰ വീണ്ടും പരിശോധിക്കാൻ സമയമായി", next: "അടുത്ത പരിശോധന",
-          latest: "ഏറ്റവും പുതിയത്", example: "ഉദാഹരണം", report: "📄 റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക", remind: "⏰ ഓർമ്മിപ്പിക്കുക", del: "🗑️ ഈ പരിശോധന ഇല്ലാതാക്കുക",
+          latest: "ഏറ്റവും പുതിയത്", example: "ഉദാഹരണം", report: "🖼️ റിപ്പോർട്ട് ചിത്രം പങ്കിടുക", pdf: "📑 PDF ഡൗൺലോഡ് ചെയ്യുക", pdfOk: "✅ PDF സേവ് ചെയ്തു — പ്രിന്റ് ചെയ്യുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥന് അയക്കുക.", remind: "⏰ ഓർമ്മിപ്പിക്കുക", del: "🗑️ ഈ പരിശോധന ഇല്ലാതാക്കുക",
           confirmClear: "ഈ ഫോണിൽ നിന്ന് എല്ലാ പരിശോധനകളും ഇല്ലാതാക്കണോ?", confirmDel: "ഈ പരിശോധന ഇല്ലാതാക്കണോ?", restored: "{n} പരിശോധന(കൾ) പുനഃസ്ഥാപിച്ചു.",
           demoDone: "ഉദാഹരണ ചെടി ചേർത്തു (ഉദാഹരണം എന്ന് അടയാളപ്പെടുത്തി).", what: "എന്ത് ചെയ്യണം", conf: "വിശ്വാസ്യത" },
   };
@@ -123,6 +123,7 @@
     $("m-what").textContent = t("what");
     $("m-steps").innerHTML = c ? c.actions.map((a) => `<li>${esc(a)}</li>`).join("") : "";
     $("m-report").textContent = t("report");
+    $("m-pdf").textContent = t("pdf");
     $("m-remind").textContent = t("remind");
     $("m-remind").href = D.reminderUrl(r, lang);
     $("m-remind").hidden = !(r.verdict && r.verdict.recheck_days);
@@ -138,6 +139,12 @@
   $("m-report").onclick = async () => {
     const b = $("m-report"); b.disabled = true;
     try { const how = await D.shareReport(open, lang); if (how !== "cancelled") { $("m-note").hidden = false; $("m-note").textContent = "✅ " + t("report").replace("📄 ", ""); } }
+    catch (e) { $("m-note").hidden = false; $("m-note").textContent = e.message; }
+    b.disabled = false;
+  };
+  $("m-pdf").onclick = async () => {
+    const b = $("m-pdf"); b.disabled = true;
+    try { await D.downloadPdf(open, lang); $("m-note").hidden = false; $("m-note").textContent = t("pdfOk"); }
     catch (e) { $("m-note").hidden = false; $("m-note").textContent = e.message; }
     b.disabled = false;
   };

@@ -2183,3 +2183,5 @@ img {
     .scan-modal-card { padding: 16px; }
 }
 .scan-modal-card > .result-label { padding-right: 46px; overflow-wrap: anywhere; }
+
+.diary-actions { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }

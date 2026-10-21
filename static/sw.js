@@ -2,7 +2,7 @@
    Pages: network first, cached copy when offline. Static files: cache first
    (safe because every CSS/JS URL is versioned per deploy).
    API calls are never cached (photos taken offline are queued by predict.js). */
-const VERSION = "cg-v2-3";  // bump to force every browser to drop old caches
+const VERSION = "cg-v2-4";  // bump to force every browser to drop old caches
 // Pages only: CSS/JS URLs carry ?v=<deploy time> and are cached the first time they load
 const PRECACHE = ["/predict", "/history", "/", "/static/icons/icon-192.png", "/manifest.webmanifest"];
 
