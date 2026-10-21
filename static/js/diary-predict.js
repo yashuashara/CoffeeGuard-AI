@@ -20,6 +20,27 @@
           shared: "✅ റിപ്പോർട്ട് പങ്കിട്ടു.", notSaved: "സേവ് ചെയ്തില്ല — വ്യക്തമായ ഫോട്ടോ വീണ്ടും എടുക്കുക." },
   };
   let lang = "en", rec = null;
+  // Opened from My Scans "Re-check this plant": save the next scan into that plant
+  const recheckPlant = (new URLSearchParams(location.search).get("plant") || "").trim().slice(0, 40);
+  const BANNER = {
+    en: (n) => `🔁 Re-checking <b>${n}</b> — take a new photo of the same plant to see its progress.`,
+    hi: (n) => `🔁 <b>${n}</b> की दोबारा जाँच — प्रगति देखने के लिए उसी पौधे की नई फ़ोटो लें।`,
+    kn: (n) => `🔁 <b>${n}</b> ಮರುಪರೀಕ್ಷೆ — ಪ್ರಗತಿ ನೋಡಲು ಅದೇ ಗಿಡದ ಹೊಸ ಫೋಟೋ ತೆಗೆಯಿರಿ.`,
+    ml: (n) => `🔁 <b>${n}</b> വീണ്ടും പരിശോധിക്കുന്നു — പുരോഗതി കാണാൻ അതേ ചെടിയുടെ പുതിയ ഫോട്ടോ എടുക്കുക.`,
+  };
+  const escHtml = (x) => x.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function showBanner() {
+    if (!recheckPlant) return;
+    let b = document.getElementById("recheck-banner");
+    if (!b) {
+      b = document.createElement("div"); b.id = "recheck-banner"; b.className = "recheck-banner";
+      const card = document.getElementById("main-upload-card");
+      card.insertBefore(b, card.firstChild);
+    }
+    let l = "en"; try { l = localStorage.getItem("cg-lang") || "en"; } catch (e) {}
+    b.innerHTML = (BANNER[lang] || BANNER[l] || BANNER.en)(escHtml(recheckPlant));
+  }
+  showBanner();
   const t = (k) => (L[lang] && L[lang][k]) || L.en[k];
   const store = { get(k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } },
                   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
@@ -61,7 +82,7 @@
     if (data.prediction === "Uncertain") { box.hidden = true; return; }
     try {
       if (!data._diaryId) {                       // save each result only once
-        const r = D.fromResult(data, await D.nextPlantName());   // each new photo = its own plant
+        const r = D.fromResult(data, recheckPlant || await D.nextPlantName());   // re-check -> same plant; otherwise a new plant
         r.id = await D.save(r);
         data._diaryId = r.id;
       }
@@ -115,5 +136,5 @@
     btn.disabled = false; btn.textContent = t("pdf");
   });
 
-  window.CGDiaryUI = { onResult, setLang(code) { lang = code; if (rec) { labels(); renderProgress(); } } };
+  window.CGDiaryUI = { onResult, setLang(code) { lang = code; showBanner(); if (rec) { labels(); renderProgress(); } } };
 })();
