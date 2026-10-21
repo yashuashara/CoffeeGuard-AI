@@ -2185,3 +2185,10 @@ img {
 .scan-modal-card > .result-label { padding-right: 46px; overflow-wrap: anywhere; }
 
 .diary-actions { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+/* My Scans always visible (not only inside the phone menu) */
+.nav-link { white-space: nowrap; }
+.myscans-pill { position: relative; z-index: 5; display: inline-block; margin-top: 16px; padding: 9px 16px; border-radius: 50px; text-decoration: none;
+    font: 700 .9rem var(--font-body); color: #93c5fd; background: rgba(59,130,246,.10); border: 1px solid rgba(59,130,246,.35); }
+.myscans-pill:hover { border-color: #93c5fd; }
+.hero-buttons { flex-wrap: wrap; }
