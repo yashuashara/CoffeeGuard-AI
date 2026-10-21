@@ -166,6 +166,24 @@
                     </div>
                     <div class="map-note" id="map-note" hidden></div>
 
+                    <!-- NEW: Leaf Diary — every scan is saved on this phone -->
+                    <div class="diary-box" id="diary-box" hidden>
+                        <div class="diary-head">
+                            <span class="diary-saved" id="diary-saved">✅ Saved to My Scans</span>
+                            <a class="diary-link" href="/history">📚 My Scans →</a>
+                        </div>
+                        <label class="diary-plant" for="diary-plant">🌱 <span id="diary-plant-label">Which plant is this?</span>
+                            <input id="diary-plant" list="diary-plants" maxlength="40" autocomplete="off" placeholder="e.g. Plant A, Row 3">
+                        </label>
+                        <datalist id="diary-plants"></datalist>
+                        <div class="diary-progress" id="diary-progress" hidden></div>
+                        <div class="diary-actions">
+                            <button class="action-btn" id="report-btn" type="button">📄 Download report</button>
+                            <a class="action-btn" id="remind-btn" target="_blank" rel="noopener">⏰ Remind me to re-check</a>
+                        </div>
+                        <div class="diary-note" id="diary-note" hidden></div>
+                    </div>
+
                     <div class="result-description">
                         <strong>📋 Biological Description</strong>
                         <span id="main-result-desc" style="font-size: 1rem;"></span>
@@ -218,5 +236,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/diary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/diary-predict.js') }}"></script>
 <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
 {% endblock %}

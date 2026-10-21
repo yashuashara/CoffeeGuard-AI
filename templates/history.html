@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Scans — CoffeeGuard AI{% endblock %}
+
+{% block content %}
+<section class="predict-hero fade-in">
+    <div class="container">
+        <h1>My <span class="highlight">Scans</span></h1>
+        <p id="h-intro">Every leaf you scan is saved on this phone, with its photo, heatmap and advice. Re-scan the same plant after 10–15 days to see if the treatment is working.</p>
+    </div>
+</section>
+
+<section class="predict-main">
+    <div class="container">
+        <div class="history-toolbar">
+            <div class="lang-pills" id="h-langs"></div>
+            <div class="history-tools">
+                <a class="mini-btn" href="/predict">➕ New scan</a>
+                <button class="mini-btn" id="h-export" type="button">⬇️ Backup</button>
+                <label class="mini-btn" for="h-import">⬆️ Restore<input type="file" id="h-import" accept="application/json,.json" hidden></label>
+                <button class="mini-btn ghost" id="h-demo" type="button">🧪 Load example plant</button>
+                <button class="mini-btn ghost" id="h-clear" type="button">🗑️ Clear all</button>
+            </div>
+        </div>
+        <div class="history-summary" id="h-summary"></div>
+        <div class="history-msg" id="h-msg" hidden></div>
+        <div class="history-empty" id="h-empty" hidden>
+            <div style="font-size:3rem">🍃</div>
+            <h3>No scans yet</h3>
+            <p>Diagnose a leaf on the Predict page — it will appear here automatically.</p>
+            <a class="btn-predict" href="/predict" style="display:inline-block;max-width:260px;margin-top:14px;text-decoration:none">🔬 Scan a leaf</a>
+        </div>
+        <div class="plant-groups" id="h-plants"></div>
+    </div>
+</section>
+
+<!-- Scan detail -->
+<div class="scan-modal" id="h-modal" hidden>
+    <div class="scan-modal-card" role="dialog" aria-modal="true" aria-labelledby="m-title">
+        <button class="scan-modal-close" id="m-close" type="button" aria-label="Close">×</button>
+        <div class="result-label" id="m-date"></div>
+        <div class="result-name" id="m-title" style="font-size:1.7rem"></div>
+        <div class="m-images"><img id="m-orig" alt="Original leaf"><img id="m-scan" alt="AI lesion scan"></div>
+        <div class="m-stats" id="m-stats"></div>
+        <div class="verdict" id="m-verdict"></div>
+        <div class="diary-progress" id="m-progress" hidden></div>
+        <h4 class="m-h" id="m-what"></h4>
+        <ol class="farmer-steps" id="m-steps"></ol>
+        <div class="diary-actions" style="margin-top:18px">
+            <button class="action-btn whatsapp" id="m-report" type="button">📄 Download report</button>
+            <a class="action-btn" id="m-remind" target="_blank" rel="noopener">⏰ Remind me</a>
+        </div>
+        <div class="diary-note" id="m-note" hidden></div>
+        <button class="mini-btn ghost" id="m-delete" type="button" style="margin-top:14px">🗑️ Delete this scan</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/diary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

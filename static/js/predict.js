@@ -399,6 +399,7 @@
     $("map-note").hidden = true;
     result.classList.add("active");
     stopVoice();
+    if (window.CGDiaryUI) window.CGDiaryUI.onResult(data, lang);   // Leaf Diary: save scan on this phone
   }
 
   function showError(data) {
@@ -429,6 +430,7 @@
     $("verdict").hidden = true;
     $("voice-note").hidden = true;
     $("result-actions").hidden = true;
+    if ($("diary-box")) $("diary-box").hidden = true;
     $("map-note").hidden = true;
     $("main-result").classList.add("active");
   }
@@ -495,6 +497,7 @@
 
   function setLang(code) {
     lang = code;
+    if (window.CGDiaryUI) window.CGDiaryUI.setLang(code);
     store.set("cg-lang", code);
     document.querySelectorAll(".lang-pill").forEach((b) => b.classList.toggle("active", b.textContent === current.languages[code]));
     stopVoice();

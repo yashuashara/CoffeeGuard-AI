@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CoffeeGuard AI - Advanced Coffee Leaf Disease Detection using Machine Learning (SVM + XGBoost). Identify Rust, Phoma, Miner diseases instantly.">
+    <meta name="description" content="CoffeeGuard AI - Coffee leaf disease detection with an AI lesion scan, severity, advice in 4 Indian languages and a leaf health diary. Detects Rust, Phoma, Miner and Cercospora.">
     <title>{% block title %}CoffeeGuard AI{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,6 +29,7 @@
                 <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="nav-home">Home</a></li>
                 <li><a href="/about" class="nav-link {% if request.path == '/about' %}active{% endif %}" id="nav-about">About Us</a></li>
                 <li><a href="/predict" class="nav-link {% if request.path == '/predict' %}active{% endif %}" id="nav-predict">Predict</a></li>
+                <li><a href="/history" class="nav-link {% if request.path == '/history' %}active{% endif %}" id="nav-history">My Scans</a></li>
                 <li><a href="/map" class="nav-link {% if request.path == '/map' %}active{% endif %}" id="nav-map">Outbreak Map</a></li>
             </ul>
             <a href="/predict" class="nav-cta" id="nav-cta-btn">Try Now →</a>
@@ -82,7 +83,7 @@
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <p>&copy; 2026 CoffeeGuard AI. Built with SVM + XGBoost Ensemble Learning.</p>
+                    <p>&copy; 2026 CoffeeGuard AI. Built with MobileNetV2 transfer learning.</p>
                 </div>
             </div>
         </div>

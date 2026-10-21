@@ -186,6 +186,12 @@ def map_page():
     return render_template('map.html')
 
 
+@app.route('/history')
+def history_page():
+    # "My Scans" — the history itself lives on the farmer's phone (IndexedDB), not on the server
+    return render_template('history.html')
+
+
 @app.route('/sw.js')
 def service_worker():
     # Served from the site root so it can control every page (offline support)
