@@ -6,16 +6,16 @@
   const $ = (id) => document.getElementById(id);
   const D = window.CGDiary;
   const L = {
-    en: { saved: "✅ Saved to My Scans on this phone", which: "Which plant is this?", report: "📄 Download report",
+    en: { saved: "✅ Saved to My Scans on this phone", which: "Which plant is this?", report: "🖼️ Share report image", pdf: "📑 Download PDF", pdfOk: "✅ PDF saved — print it or send it to your KVK officer.",
           remind: "⏰ Remind me to re-check", making: "Making report…", done: "✅ Report saved — share it on WhatsApp or show it to your KVK officer.",
           shared: "✅ Report shared.", notSaved: "Not saved — retake a clearer photo to get a result worth keeping." },
-    hi: { saved: "✅ इस फ़ोन पर 'मेरी जाँचें' में सेव हुआ", which: "यह कौन सा पौधा है?", report: "📄 रिपोर्ट डाउनलोड करें",
+    hi: { saved: "✅ इस फ़ोन पर 'मेरी जाँचें' में सेव हुआ", which: "यह कौन सा पौधा है?", report: "🖼️ रिपोर्ट फ़ोटो भेजें", pdf: "📑 PDF डाउनलोड करें", pdfOk: "✅ PDF सेव हुई — प्रिंट करें या KVK अधिकारी को भेजें।",
           remind: "⏰ दोबारा जाँच की याद दिलाएँ", making: "रिपोर्ट बन रही है…", done: "✅ रिपोर्ट सेव हुई — WhatsApp पर भेजें या KVK अधिकारी को दिखाएँ।",
           shared: "✅ रिपोर्ट भेजी गई।", notSaved: "सेव नहीं हुआ — साफ़ फ़ोटो दोबारा लें।" },
-    kn: { saved: "✅ ಈ ಫೋನ್‌ನಲ್ಲಿ 'ನನ್ನ ಪರೀಕ್ಷೆಗಳು' ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ", which: "ಇದು ಯಾವ ಗಿಡ?", report: "📄 ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+    kn: { saved: "✅ ಈ ಫೋನ್‌ನಲ್ಲಿ 'ನನ್ನ ಪರೀಕ್ಷೆಗಳು' ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ", which: "ಇದು ಯಾವ ಗಿಡ?", report: "🖼️ ವರದಿ ಚಿತ್ರ ಹಂಚಿಕೊಳ್ಳಿ", pdf: "📑 PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ", pdfOk: "✅ PDF ಉಳಿಸಲಾಗಿದೆ — ಮುದ್ರಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ಕಳುಹಿಸಿ.",
           remind: "⏰ ಮರುಪರೀಕ್ಷೆಗೆ ನೆನಪಿಸಿ", making: "ವರದಿ ಸಿದ್ಧವಾಗುತ್ತಿದೆ…", done: "✅ ವರದಿ ಉಳಿಸಲಾಗಿದೆ — WhatsApp ನಲ್ಲಿ ಕಳುಹಿಸಿ ಅಥವಾ KVK ಅಧಿಕಾರಿಗೆ ತೋರಿಸಿ.",
           shared: "✅ ವರದಿ ಹಂಚಿಕೊಳ್ಳಲಾಗಿದೆ.", notSaved: "ಉಳಿಸಿಲ್ಲ — ಸ್ಪಷ್ಟ ಫೋಟೋ ಮತ್ತೆ ತೆಗೆಯಿರಿ." },
-    ml: { saved: "✅ ഈ ഫോണിൽ 'എന്റെ പരിശോധനകൾ' എന്നതിൽ സേവ് ചെയ്തു", which: "ഇത് ഏത് ചെടിയാണ്?", report: "📄 റിപ്പോർട്ട് ഡൗൺലോഡ് ചെയ്യുക",
+    ml: { saved: "✅ ഈ ഫോണിൽ 'എന്റെ പരിശോധനകൾ' എന്നതിൽ സേവ് ചെയ്തു", which: "ഇത് ഏത് ചെടിയാണ്?", report: "🖼️ റിപ്പോർട്ട് ചിത്രം പങ്കിടുക", pdf: "📑 PDF ഡൗൺലോഡ് ചെയ്യുക", pdfOk: "✅ PDF സേവ് ചെയ്തു — പ്രിന്റ് ചെയ്യുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥന് അയക്കുക.",
           remind: "⏰ വീണ്ടും പരിശോധിക്കാൻ ഓർമ്മിപ്പിക്കുക", making: "റിപ്പോർട്ട് തയ്യാറാക്കുന്നു…", done: "✅ റിപ്പോർട്ട് സേവ് ചെയ്തു — WhatsApp-ൽ അയക്കുക അല്ലെങ്കിൽ KVK ഉദ്യോഗസ്ഥനെ കാണിക്കുക.",
           shared: "✅ റിപ്പോർട്ട് പങ്കിട്ടു.", notSaved: "സേവ് ചെയ്തില്ല — വ്യക്തമായ ഫോട്ടോ വീണ്ടും എടുക്കുക." },
   };
@@ -48,6 +48,7 @@
     $("diary-saved").textContent = t("saved");
     $("diary-plant-label").textContent = t("which");
     $("report-btn").textContent = t("report");
+    $("pdf-btn").textContent = t("pdf");
     $("remind-btn").textContent = t("remind");
     if (rec) $("remind-btn").href = D.reminderUrl(rec, lang);
     $("remind-btn").hidden = !(rec && rec.verdict && rec.verdict.recheck_days);
@@ -102,6 +103,16 @@
       if (how !== "cancelled") { note.hidden = false; note.textContent = how === "shared" ? t("shared") : t("done"); }
     } catch (e) { note.hidden = false; note.textContent = "Couldn't create the report: " + e.message; }
     btn.disabled = false; btn.textContent = t("report");
+  });
+
+  $("pdf-btn").addEventListener("click", async () => {
+    if (!rec) return;
+    await renamePlant();
+    const btn = $("pdf-btn"), note = $("diary-note");
+    btn.disabled = true; btn.textContent = t("making");
+    try { await D.downloadPdf(rec, lang); note.hidden = false; note.textContent = t("pdfOk"); }
+    catch (e) { note.hidden = false; note.textContent = "Couldn't create the PDF: " + e.message; }
+    btn.disabled = false; btn.textContent = t("pdf");
   });
 
   window.CGDiaryUI = { onResult, setLang(code) { lang = code; if (rec) { labels(); renderProgress(); } } };
